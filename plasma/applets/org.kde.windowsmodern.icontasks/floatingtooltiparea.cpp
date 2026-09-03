@@ -121,7 +121,9 @@ void FloatingToolTipArea::showToolTip()
         setMainItem(dlg->loadDefaultItem());
     }
 
-    dlg->setMainItem(nullptr);
+    // Do not detach mainItem on every show. setMainItem(nullptr) then
+    // setMainItem(same) reparents the tooltip across windows, drops the
+    // PipeWire texture, and flashes a blank frame in every thumbnail.
 
     Plasma::Types::Location location = m_location;
     if (m_location == Plasma::Types::Floating) {
@@ -146,7 +148,11 @@ void FloatingToolTipArea::showToolTip()
     dlg->setHideTimeout(m_timeout);
     dlg->setOwner(this);
     dlg->setVisualParent(this);
-    dlg->setMainItem(mainItem());
+    if (dlg->mainItem() != mainItem()) {
+        dlg->setMainItem(mainItem());
+    } else {
+        dlg->syncSize();
+    }
     dlg->setInteractive(m_interactive);
     dlg->setMargin(m_margin);
 

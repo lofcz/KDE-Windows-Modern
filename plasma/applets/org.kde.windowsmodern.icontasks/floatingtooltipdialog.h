@@ -31,6 +31,7 @@ public:
 
     void dismiss();
     void keepalive();
+    void syncSize();
 
     bool interactive();
     void setInteractive(bool interactive);

@@ -66,9 +66,12 @@ Q_SIGNALS:
     void addLauncher(const QUrl &url) const;
 
     void showAllPlaces();
+    void aboutToSleep();
+    void resumedFromSleep();
 
 private Q_SLOTS:
     void handleRecentDocumentAction() const;
+    void onPrepareForSleep(bool sleeping);
 
 private:
     QVariantList systemSettingsActions(QObject *parent) const;

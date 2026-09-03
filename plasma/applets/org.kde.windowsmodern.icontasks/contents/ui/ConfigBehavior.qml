@@ -90,6 +90,12 @@ KCMUtils.SimpleKCM {
             Accessible.name: currentText
             Accessible.onPressAction: currentIndex = currentIndex === count - 1 ? 0 : (currentIndex + 1)
         }
+        Kirigami.InlineMessage {
+            Layout.fillWidth: true
+            visible: true
+            type: Kirigami.MessageType.Information
+            text: i18nc("@info", "Left-click a grouped icon always shows window thumbnails. A quick double-click still raises or minimizes every window in the group.")
+        }
         // "You asked for Window View but Window View is not available" message
         Kirigami.InlineMessage {
             Layout.fillWidth: true

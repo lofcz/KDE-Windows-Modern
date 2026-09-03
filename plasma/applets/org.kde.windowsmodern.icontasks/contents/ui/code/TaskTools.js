@@ -116,6 +116,85 @@ function groupTopTask(childTaskList, attribute, tasks) {
     return topTaskIndex;
 }
 
+// Activate a window in the group (last-used, or cycle if one is already focused).
+// The raise-app-windows KWin script turns a panel-triggered activation into
+// raise-all / minimize-all for the app.
+function activateGroupedWindows(index, model, task, tasks) {
+    let childTaskList = [];
+
+    for (let i = 0; i < tasks.tasksModel.rowCount(task.modelIndex(index)); ++i) {
+        const childTaskModelIndex = tasks.tasksModel.makeModelIndex(task.index, i);
+        childTaskList.push(childTaskModelIndex);
+    }
+
+    if (!childTaskList.length) {
+        return;
+    }
+
+    // If the active task is already in this group, cycle so KWin sees a
+    // fresh activation even when the same app already has focus.
+    if (childTaskList.some(childIndex => tasks.tasksModel.data(childIndex, TaskManager.AbstractTasksModel.IsActive))) {
+        for (let j = 0; j < childTaskList.length; ++j) {
+            const childTask = childTaskList[j];
+            if (tasks.tasksModel.data(childTask, TaskManager.AbstractTasksModel.IsActive)) {
+                let nextTask = j + 1;
+                if (nextTask >= childTaskList.length) {
+                    nextTask = 0;
+                }
+                tasks.tasksModel.requestActivate(childTaskList[nextTask]);
+                break;
+            }
+        }
+        return;
+    }
+
+    let topTaskIndex = groupTopTask(childTaskList, TaskManager.AbstractTasksModel.LastActivated, tasks);
+    if (topTaskIndex === undefined) {
+        topTaskIndex = groupTopTask(childTaskList, TaskManager.AbstractTasksModel.StackingOrder, tasks);
+    }
+    if (topTaskIndex !== undefined) {
+        tasks.tasksModel.requestActivate(topTaskIndex);
+    }
+}
+
+function toggleGroupedWindows(index, model, task, tasks) {
+    const parentIndex = task.modelIndex(index);
+    const rowCount = tasks.tasksModel.rowCount(parentIndex);
+    const children = [];
+
+    if (rowCount > 0) {
+        for (let i = 0; i < rowCount; ++i) {
+            children.push(tasks.tasksModel.makeModelIndex(task.index, i));
+        }
+    } else {
+        children.push(parentIndex);
+    }
+
+    let visible = 0;
+    for (let i = 0; i < children.length; ++i) {
+        if (!tasks.tasksModel.data(children[i], TaskManager.AbstractTasksModel.IsMinimized)) {
+            visible++;
+        }
+    }
+
+    const groupFocused = !!model.IsActive;
+    if (groupFocused && visible > 0) {
+        for (let i = 0; i < children.length; ++i) {
+            if (!tasks.tasksModel.data(children[i], TaskManager.AbstractTasksModel.IsMinimized)) {
+                tasks.tasksModel.requestToggleMinimized(children[i]);
+            }
+        }
+        return;
+    }
+
+    for (let i = 0; i < children.length; ++i) {
+        if (tasks.tasksModel.data(children[i], TaskManager.AbstractTasksModel.IsMinimized)) {
+            tasks.tasksModel.requestToggleMinimized(children[i]);
+        }
+    }
+    activateGroupedWindows(index, model, task, tasks);
+}
+
 function activateTask(index, model, modifiers, task, plasmoid, tasks, windowViewAvailable) {
     if (modifiers & Qt.ShiftModifier) {
         tasks.tasksModel.requestNewInstance(index);
@@ -134,43 +213,7 @@ function activateTask(index, model, modifiers, task, plasmoid, tasks, windowView
         // Otherwise cycle through all tasks in the group without paying attention
         // to the last activation time, which otherwise would change with every click
         if (plasmoid.configuration.groupedTaskVisualization === 0) {
-            let childTaskList = [];
-
-            for (let i = 0; i < tasks.tasksModel.rowCount(task.modelIndex(index)); ++i) {
-                const childTaskModelIndex = tasks.tasksModel.makeModelIndex(task.index, i);
-                childTaskList.push(childTaskModelIndex);
-            }
-
-            // If the active task is already among in the group that was
-            // activated, cycle through all tasks according to the order of
-            // the immutable model index so the order doesn't change with
-            // every click.
-            if (childTaskList.some(index => tasks.tasksModel.data(index, TaskManager.AbstractTasksModel.IsActive))) {
-                for (let j = 0; j < childTaskList.length; ++j) {
-                    const childTask = childTaskList[j];
-                    if (tasks.tasksModel.data(childTask, TaskManager.AbstractTasksModel.IsActive)) {
-                        // Found the current task. Activate the next one
-                        let nextTask = j + 1;
-                        if (nextTask >= childTaskList.length) {
-                            nextTask = 0;
-                        }
-                        tasks.tasksModel.requestActivate(childTaskList[nextTask]);
-                        break;
-                    }
-                }
-            } else {
-                // If the active task is from a different app from the group that
-                // was clicked on switch to the last-used task from that app.
-                let topTaskIndex = groupTopTask(childTaskList, TaskManager.AbstractTasksModel.LastActivated, tasks);
-
-                // If no task in the group was ever active, the LastActivated property is not set on any task
-                // -> default to the stacking order
-                if (topTaskIndex === undefined) {
-                    topTaskIndex = groupTopTask(childTaskList, TaskManager.AbstractTasksModel.StackingOrder, tasks)
-                }
-
-                tasks.tasksModel.requestActivate(topTaskIndex);
-            }
+            activateGroupedWindows(index, model, task, tasks);
         }
 
         // Option 2: show tooltips for all child tasks
@@ -238,9 +281,11 @@ function taskPrefix(prefix, location) {
 }
 
 function taskPrefixHovered(prefix, location) {
+    // Always fall back to plain "hover" so pinned launchers (basePrefix "")
+    // get the same Win11 highlight as running tasks.
     return [
         ...taskPrefix((prefix || "launcher") + "-hover", location),
-        ...prefix ? taskPrefix("hover", location) : [],
+        ...taskPrefix("hover", location),
         ...taskPrefix(prefix, location),
     ];
 }

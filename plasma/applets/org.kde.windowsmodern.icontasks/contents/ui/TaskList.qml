@@ -13,6 +13,7 @@ import plasma.applet.org.kde.plasma.icontasks as TaskManagerApplet
 
 GridLayout {
     property bool animating: false
+    clip: false
 
     rowSpacing: 0
     columnSpacing: 0

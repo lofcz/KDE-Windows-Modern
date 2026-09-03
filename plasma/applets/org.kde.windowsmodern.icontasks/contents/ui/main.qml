@@ -36,6 +36,15 @@ PlasmoidItem {
 
     property Task toolTipOpenedByClick
     property Task toolTipAreaItem
+    property bool sessionAsleep: false
+
+    function parkForSleep(): void {
+        sessionAsleep = true;
+        toolTipOpenedByClick = null;
+        if (toolTipAreaItem) {
+            toolTipAreaItem.hideImmediately();
+        }
+    }
 
     readonly property Component contextMenuComponent: Qt.createComponent("ContextMenu.qml")
     readonly property Component pulseAudioComponent: Qt.createComponent("PulseAudio.qml")
@@ -236,6 +245,8 @@ PlasmoidItem {
         onAddLauncher: url => {
             tasks.addLauncher(url);
         }
+        onAboutToSleep: tasks.parkForSleep()
+        onResumedFromSleep: tasks.sessionAsleep = false
     }
 
     DBus.DBusServiceWatcher {

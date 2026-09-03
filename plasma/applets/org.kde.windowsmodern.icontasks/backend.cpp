@@ -22,6 +22,7 @@
 #include <KApplicationTrader>
 #include <KIO/ApplicationLauncherJob>
 
+#include <QDBusConnection>
 #include <QAction>
 #include <QActionGroup>
 #include <QApplication>
@@ -62,10 +63,26 @@ Backend::Backend(QObject *parent)
                     m_activityManagerPluginsSettings.load();
                 }
             });
+
+    QDBusConnection::systemBus().connect(QStringLiteral("org.freedesktop.login1"),
+                                         QStringLiteral("/org/freedesktop/login1"),
+                                         QStringLiteral("org.freedesktop.login1.Manager"),
+                                         QStringLiteral("PrepareForSleep"),
+                                         this,
+                                         SLOT(onPrepareForSleep(bool)));
 }
 
 Backend::~Backend()
 {
+}
+
+void Backend::onPrepareForSleep(bool sleeping)
+{
+    if (sleeping) {
+        Q_EMIT aboutToSleep();
+    } else {
+        Q_EMIT resumedFromSleep();
+    }
 }
 
 QUrl Backend::tryDecodeApplicationsUrl(const QUrl &launcherUrl)

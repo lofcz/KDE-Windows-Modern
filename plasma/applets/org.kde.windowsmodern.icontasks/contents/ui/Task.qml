@@ -19,6 +19,7 @@ import plasma.applet.org.kde.plasma.icontasks as TaskManagerApplet
 import org.kde.plasma.plasmoid
 
 import org.kde.taskmanager as TaskManager
+import "code/TaskTools.js" as LocalTaskTools
 
 FloatingToolTipArea {
     id: task
@@ -44,7 +45,17 @@ FloatingToolTipArea {
     Layout.fillHeight: !inPopup
     Layout.maximumWidth: tasksRoot.vertical
         ? -1
-        : ((model.IsLauncher && !tasksRoot.iconsOnly) ? tasksRoot.height / taskList.rows : TaskManagerApplet.LayoutMetrics.preferredMaxWidth())
+        : ((model.IsLauncher && !tasksRoot.iconsOnly)
+            ? tasksRoot.height / taskList.rows
+            : (tasksRoot.iconsOnly
+                ? Math.round(tasksRoot.height * 0.91)
+                : TaskManagerApplet.LayoutMetrics.preferredMaxWidth()))
+    Layout.preferredWidth: (!tasksRoot.vertical && tasksRoot.iconsOnly && !task.inPopup)
+        ? Math.round(tasksRoot.height * 0.91)
+        : -1
+    Layout.minimumWidth: (!tasksRoot.vertical && tasksRoot.iconsOnly && !task.inPopup)
+        ? Math.round(tasksRoot.height * 0.91)
+        : -1
     Layout.maximumHeight: tasksRoot.vertical ? TaskManagerApplet.LayoutMetrics.preferredMaxHeight() : -1
 
     required property var model
@@ -60,6 +71,15 @@ FloatingToolTipArea {
     property bool isWindow: model.IsWindow
     property int childCount: model.ChildCount
     property int previousChildCount: 0
+    readonly property int groupWindowCount: {
+        if (childCount > 1) {
+            return childCount;
+        }
+        const list = model.WinIdList;
+        return list ? list.length : 0;
+    }
+    readonly property bool isCombinedGroup: !inPopup && groupWindowCount > 1
+    clip: false
     property alias labelText: label.text
     property QtObject contextMenu: null
     readonly property bool smartLauncherEnabled: !inPopup
@@ -164,21 +184,7 @@ FloatingToolTipArea {
         }
 
         if (model.IsGroupParent) {
-            switch (Plasmoid.configuration.groupedTaskVisualization) {
-            case 0:
-                break; // Use the default description
-            case 1: {
-                return `${i18nc("@info:usagetip %1 task name", "Show Task tooltip for %1", model.display)}; ${smartLauncherDescription}`;
-            }
-            case 2: {
-                if (effectWatcher.registered) {
-                    return `${i18nc("@info:usagetip %1 task name", "Show windows side by side for %1", model.display)}; ${smartLauncherDescription}`;
-                }
-                // fallthrough
-            }
-            default:
-                return `${i18nc("@info:usagetip %1 task name", "Open textual list of windows for %1", model.display)}; ${smartLauncherDescription}`;
-            }
+            return `${i18nc("@info:usagetip %1 task name", "Show window thumbnails for %1", model.display)}; ${smartLauncherDescription}`;
         }
 
         return `${i18nc("@info:usagetip %1 task name", "Activate %1", model.display)}; ${smartLauncherDescription}`;
@@ -186,10 +192,14 @@ FloatingToolTipArea {
     Accessible.role: Accessible.Button
     Accessible.onPressAction: leftTapHandler.leftClick()
 
+    onAboutToShow: task.toolTipOpen = true
+
     onToolTipVisibleChanged: toolTipVisible => {
         task.toolTipOpen = toolTipVisible;
         if (!toolTipVisible) {
-            tasksRoot.toolTipOpenedByClick = null;
+            if (!task.containsMouse) {
+                tasksRoot.toolTipOpenedByClick = null;
+            }
         } else {
             tasksRoot.toolTipAreaItem = task;
         }
@@ -199,7 +209,8 @@ FloatingToolTipArea {
         if (containsMouse) {
             task.forceActiveFocus(Qt.MouseFocusReason);
             task.updateMainItemBindings();
-        } else {
+        } else if (!task.toolTipOpen) {
+            // Keep a click-pinned flyout alive while the pointer moves onto it.
             tasksRoot.toolTipOpenedByClick = null;
         }
     }
@@ -266,7 +277,17 @@ FloatingToolTipArea {
     onAudioIndicatorsEnabledChanged: task.hasAudioStreamChanged()
 
     Keys.onMenuPressed: event => contextMenuTimer.start()
-    Keys.onReturnPressed: event => TaskManagerApplet.TaskTools.activateTask(modelIndex(), model, event.modifiers, task, Plasmoid, tasksRoot, effectWatcher.registered)
+    Keys.onReturnPressed: event => {
+        if (event.modifiers & Qt.ShiftModifier) {
+            tasksModel.requestNewInstance(modelIndex());
+            return;
+        }
+        if (task.isCombinedGroup) {
+            task.showGroupThumbnails();
+            return;
+        }
+        TaskManagerApplet.TaskTools.activateTask(modelIndex(), model, event.modifiers, task, Plasmoid, tasksRoot, effectWatcher.registered);
+    }
     Keys.onEnterPressed: event => Keys.returnPressed(event);
     Keys.onSpacePressed: event => Keys.returnPressed(event);
     Keys.onUpPressed: event => Keys.leftPressed(event)
@@ -293,9 +314,28 @@ FloatingToolTipArea {
     }
 
     function showContextMenu(args: var): void {
+        groupDoubleClickTimer.stop();
         task.hideImmediately();
         contextMenu = tasksRoot.createContextMenu(task, modelIndex(), args) as ContextMenu;
         contextMenu.show();
+    }
+
+    function showGroupThumbnails(): void {
+        // Pin instantly. Do not hide/show if hover already has the flyout up.
+        tasksRoot.toolTipOpenedByClick = task;
+        if (task.toolTipOpen) {
+            return;
+        }
+        task.updateMainItemBindings();
+        task.showToolTip();
+    }
+
+    function activateGroupWindows(): void {
+        if (task.active) {
+            task.hideToolTip();
+        }
+        tasksRoot.toolTipOpenedByClick = null;
+        LocalTaskTools.toggleGroupedWindows(modelIndex(), model, task, tasksRoot);
     }
 
     function updateAudioStreams(args: var): void {
@@ -367,6 +407,10 @@ FloatingToolTipArea {
         mainItem.virtualDesktops = Qt.binding(() => model.VirtualDesktops);
         mainItem.isOnAllVirtualDesktops = Qt.binding(() => model.IsOnAllVirtualDesktops);
         mainItem.activities = Qt.binding(() => model.Activities);
+        // KWin rejects PipeWire screencasts until the window has a real
+        // buffer. Geometry 0x0 means "not ready for painting" — requesting
+        // a thumbnail then produces a dead stream (icon or blank preview).
+        mainItem.windowGeometry = Qt.binding(() => model.Geometry);
 
         mainItem.smartLauncherCountVisible = Qt.binding(() => smartLauncherItem?.countVisible ?? false);
         mainItem.smartLauncherCount = Qt.binding(() => mainItem.smartLauncherCountVisible ? (smartLauncherItem?.count ?? 0) : 0);
@@ -412,12 +456,36 @@ FloatingToolTipArea {
         onTriggered: menuTapHandler.longPressed()
     }
 
+    Timer {
+        id: groupDoubleClickTimer
+        interval: Math.max(200, Qt.styleHints.mouseDoubleClickInterval || 400)
+    }
+
     TapHandler {
         id: leftTapHandler
         acceptedButtons: Qt.LeftButton
         onTapped: (eventPoint, button) => leftClick()
 
         function leftClick(): void {
+            if (point.modifiers & Qt.ShiftModifier) {
+                groupDoubleClickTimer.stop();
+                tasksModel.requestNewInstance(modelIndex());
+                return;
+            }
+
+            // Combined group: click shows thumbnails; quick double-click
+            // keeps raise/minimize-all via the KWin script.
+            if (task.isCombinedGroup) {
+                if (groupDoubleClickTimer.running) {
+                    groupDoubleClickTimer.stop();
+                    task.activateGroupWindows();
+                    return;
+                }
+                groupDoubleClickTimer.restart();
+                task.showGroupThumbnails();
+                return;
+            }
+
             if (task.active) {
                 task.hideToolTip();
             }
@@ -564,11 +632,31 @@ FloatingToolTipArea {
         }
 
         Kirigami.Icon {
+            id: groupIconBack
+            visible: task.isCombinedGroup
+            anchors.centerIn: parent
+            anchors.horizontalCenterOffset: -4
+            anchors.verticalCenterOffset: -4
+            width: icon.width
+            height: icon.height
+            z: -1
+            opacity: 0.4
+            roundToIconSize: false
+            active: false
+            enabled: true
+            source: task.model.decoration
+        }
+
+        Kirigami.Icon {
             id: icon
 
-            anchors.fill: parent
+            // One size for every app: 72% of the task button.
+            anchors.centerIn: parent
+            width: Math.round(Math.min(parent.width, parent.height) * 0.82)
+            height: width
+            roundToIconSize: false
 
-            active: task.highlighted
+            active: false
             enabled: true
 
             source: task.model.decoration

@@ -11,7 +11,7 @@ find_package(ECM REQUIRED 5.240.0)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 include(ECMQtDeclareLoggingCategory)
 
-find_package(Qt6 REQUIRED COMPONENTS Core Qml Quick QuickControls2)
+find_package(Qt6 REQUIRED COMPONENTS Core DBus Qml Quick QuickControls2)
 find_package(KF6 REQUIRED COMPONENTS
     Config
     I18n
@@ -89,6 +89,7 @@ target_sources(org.kde.plasma.icontasks PRIVATE ${KCFG_SRCS} ${SRC_LOGGING})
 
 target_link_libraries(org.kde.plasma.icontasks PRIVATE
     Qt6::Core
+    Qt6::DBus
     Qt6::Qml
     Qt6::Quick
     Plasma::Activities

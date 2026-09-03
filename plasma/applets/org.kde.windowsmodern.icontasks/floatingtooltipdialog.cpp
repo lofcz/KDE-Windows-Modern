@@ -52,6 +52,11 @@ FloatingToolTipDialog::FloatingToolTipDialog()
 
 FloatingToolTipDialog::~FloatingToolTipDialog() = default;
 
+void FloatingToolTipDialog::syncSize()
+{
+    updateSize();
+}
+
 void FloatingToolTipDialog::updateSize()
 {
     QScreen *s = screen();

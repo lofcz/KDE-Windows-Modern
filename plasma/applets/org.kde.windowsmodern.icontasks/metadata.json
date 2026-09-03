@@ -18,7 +18,7 @@
         "Id": "org.kde.plasma.icontasks",
         "License": "GPL-2.0-or-later",
         "Name": "Windows Modern Icon Tasks",
-        "Version": "1.0.0",
+        "Version": "1.2.0",
         "Website": "https://github.com/Jeysef/KDE-Windows-Modern"
     },
     "X-Plasma-API-Minimum-Version": "6.0",

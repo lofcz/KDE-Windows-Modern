@@ -49,6 +49,7 @@ Loader {
     property int smartLauncherCount
 
     property bool blockingUpdates: false
+    property bool reordering: false
     property rect windowGeometry: Qt.rect(0, 0, 0, 0)
 
     readonly property bool isVerticalPanel: Plasmoid.formFactor === PlasmaCore.Types.Vertical
@@ -64,8 +65,12 @@ Loader {
     LayoutMirroring.enabled: Application.layoutDirection === Qt.RightToLeft
     LayoutMirroring.childrenInherit: true
 
-    active: !blockingUpdates && rootIndex !== undefined && ((parentTask && parentTask.containsMouse) || Window.visibility !== Window.Hidden)
-    asynchronous: true
+    active: !blockingUpdates && rootIndex !== undefined && (reordering || (parentTask && parentTask.containsMouse) || (parentTask && parentTask.toolTipOpen) || tasks.toolTipOpenedByClick === parentTask)
+    asynchronous: false
+
+    onActiveChanged: if (!active) {
+        reordering = false
+    }
 
     sourceComponent: isGroup ? groupToolTip : singleTooltip
 
@@ -125,16 +130,49 @@ Loader {
                 model: delegateModel
 
                 orientation: toolTipDelegate.isVerticalPanel || !Plasmoid.configuration.showToolTips ? ListView.Vertical : ListView.Horizontal
-                reuseItems: true
+                reuseItems: false
+                interactive: !toolTipDelegate.reordering
 
                 // Win11: spacing between tiles matches tooltip SVG margin
                 spacing: Plasmoid.configuration.showToolTips ? toolTipDelegate.tileSpacing : 0
 
+                function moveThumbnail(from, to) {
+                    if (from === to || from < 0 || to < 0 || to >= count) {
+                        return;
+                    }
+                    if (tasksModel.move(from, to, toolTipDelegate.rootIndex)) {
+                        return;
+                    }
+                    delegateModel.items.move(from, to);
+                }
+
+                move: Transition {
+                    enabled: toolTipDelegate.reordering
+                    NumberAnimation {
+                        properties: "x,y"
+                        duration: Kirigami.Units.shortDuration
+                        easing.type: Easing.OutQuad
+                    }
+                }
+                displaced: Transition {
+                    enabled: toolTipDelegate.reordering
+                    NumberAnimation {
+                        properties: "x,y"
+                        duration: Kirigami.Units.shortDuration
+                        easing.type: Easing.OutQuad
+                    }
+                }
+
                 // Required to know whether to display the media player buttons on the first window or not
                 property bool hasTrackInATitle: {
+                    // An empty track (Chromium's idle MPRIS player) would match every title.
+                    const track = toolTipDelegate.playerData?.track ?? ""
+                    if (track.length === 0) {
+                        return false
+                    }
                     var found = false
                     for (var i=0; i<model.items.count && !found; i++) {
-                        found = model.items.get(i).model.display.includes(toolTipDelegate.playerData?.track)
+                        found = model.items.get(i).model.display.includes(track)
                     }
                     return found
                 }
@@ -173,6 +211,7 @@ Loader {
                     hasTrackInATitle: groupToolTipListView.hasTrackInATitle
                     orientation: groupToolTipListView.orientation
                     windowGeometry: model.Geometry
+                    groupListView: groupToolTipListView
                 }
             }
         }
