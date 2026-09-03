@@ -1,90 +1,73 @@
 /***************************************************************************
  *   License: GPL-3.0-or-later
- *   Author: Jeysef
  *
- *   Flat/link-style button with icon and text, used for "All apps", "Back".
- *   Styling matches menu.11.next — rounded, subtle border, clean hover.
+ *   Windows 11 Start "All apps" / "Back" chip: no outline, soft fill,
+ *   small chevron. Hover only lifts the fill.
  ***************************************************************************/
 
 import QtQuick
-import QtQuick.Controls
 import QtQuick.Layouts
 
 import org.kde.kirigami as Kirigami
 
-import "../code/theme.js" as Theme
-
-Rectangle {
+Item {
     id: item
 
-    property int buttonHeight: Math.floor(Kirigami.Units.gridUnit * 2)
-    implicitHeight: buttonHeight
-    implicitWidth: row.implicitWidth + (Kirigami.Units.mediumSpacing * 2)
-
-    border.width: 1
-    border.color: Qt.rgba(Kirigami.Theme.textColor.r,
-                           Kirigami.Theme.textColor.g,
-                           Kirigami.Theme.textColor.b, Theme.buttonBorderOpacity)
-
-    radius: Kirigami.Units.smallSpacing
-    color: {
-        var hover = Qt.rgba(Kirigami.Theme.textColor.r,
-                            Kirigami.Theme.textColor.g,
-                            Kirigami.Theme.textColor.b, Theme.buttonHoverOpacity);
-        if (flat) {
-            return mouseItem.containsMouse
-                   ? Qt.rgba(Kirigami.Theme.textColor.r,
-                              Kirigami.Theme.textColor.g,
-                              Kirigami.Theme.textColor.b, Theme.buttonFlatHoverOpacity)
-                   : Qt.rgba(Kirigami.Theme.textColor.r,
-                              Kirigami.Theme.textColor.g,
-                              Kirigami.Theme.textColor.b, Theme.buttonFlatBackgroundOpacity);
-        }
-        return mouseItem.containsMouse ? hover : Kirigami.Theme.backgroundColor;
-    }
-
-    Behavior on color { ColorAnimation { duration: 90 } }
-
-    smooth: true
-    focus: true
-
-    property alias text: lb.text
-    property bool flat: false
-    property alias iconName: icon.source
+    property int buttonHeight: 24
+    property alias text: label.text
+    property bool flat: true
+    property alias iconName: chevron.source
     property bool mirror: false
 
     signal clicked
 
+    implicitHeight: buttonHeight
+    implicitWidth: row.implicitWidth + 20
+    focus: true
+
     Keys.onSpacePressed: item.clicked()
+    Keys.onReturnPressed: item.clicked()
+
+    Rectangle {
+        anchors.fill: parent
+        radius: 4
+        border.width: 0
+        color: mouseItem.pressed
+               ? Qt.rgba(1, 1, 1, 0.16)
+               : mouseItem.containsMouse
+                 ? Qt.rgba(1, 1, 1, 0.12)
+                 : Qt.rgba(1, 1, 1, 0.06)
+        Behavior on color { ColorAnimation { duration: 80 } }
+    }
 
     RowLayout {
         id: row
-        anchors.fill: parent
-        anchors.margins: Kirigami.Units.smallSpacing
-        anchors.topMargin: Kirigami.Units.smallSpacing / 2
-        anchors.bottomMargin: Kirigami.Units.smallSpacing / 2
-        spacing: Kirigami.Units.smallSpacing
-        LayoutMirroring.enabled: mirror
+        anchors.centerIn: parent
+        spacing: 6
+        layoutDirection: item.mirror ? Qt.RightToLeft : Qt.LeftToRight
 
-        Label {
-            id: lb
+        Text {
+            id: label
             color: Kirigami.Theme.textColor
-            Layout.leftMargin: Kirigami.Units.smallSpacing
-            Layout.fillWidth: true
+            font.pixelSize: Math.round(Kirigami.Theme.defaultFont.pixelSize * 0.92)
+            font.weight: Font.Normal
+            verticalAlignment: Text.AlignVCenter
         }
 
         Kirigami.Icon {
-            id: icon
-            implicitHeight: Kirigami.Units.gridUnit
-            implicitWidth: implicitHeight
+            id: chevron
+            Layout.preferredWidth: 10
+            Layout.preferredHeight: 10
+            color: Kirigami.Theme.textColor
+            opacity: 0.85
             smooth: true
         }
     }
 
     MouseArea {
         id: mouseItem
-        hoverEnabled: true
         anchors.fill: parent
+        hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         onClicked: item.clicked()
     }

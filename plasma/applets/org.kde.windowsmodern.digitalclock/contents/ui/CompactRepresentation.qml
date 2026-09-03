@@ -25,6 +25,7 @@ MouseArea {
 
     Layout.fillWidth: false
     Layout.fillHeight: true
+    clip: true
 
     required property var plasmoidItem
 
@@ -33,8 +34,13 @@ MouseArea {
     readonly property real padding: Plasmoid.configuration.compactPadding
     readonly property real maxContentHeight: Math.max(1, panelHeight * (1 - 2 * padding))
 
-    implicitWidth: contentLayout.implicitWidth + Kirigami.Units.largeSpacing
+    readonly property int leftPadding: 2
+    readonly property int contentWidth: Math.ceil(Math.max(timeMetrics.width, dateMetrics.width, timeZoneMetrics.width))
+    implicitWidth: contentWidth + leftPadding
     implicitHeight: panelHeight
+    Layout.minimumWidth: implicitWidth
+    Layout.preferredWidth: implicitWidth
+    Layout.maximumWidth: implicitWidth
 
     // Font configured by the user or theme defaults.
     readonly property font baseFont: {
@@ -75,14 +81,15 @@ MouseArea {
     readonly property bool showTimezone: timezoneString.length > 0
 
     // Height ratios for stacked labels. Ratios always sum to 1 when visible.
+    // Windows 11 taskbar: time slightly larger, date still readable.
     readonly property real timeHeightRatio: {
-        if (showDate && showTimezone) return 0.55;
-        if (showDate || showTimezone) return 0.65;
+        if (showDate && showTimezone) return 0.52;
+        if (showDate || showTimezone) return 0.58;
         return 1.0;
     }
     readonly property real dateHeightRatio: {
-        if (showDate && showTimezone) return 0.30;
-        if (showDate) return 0.35;
+        if (showDate && showTimezone) return 0.33;
+        if (showDate) return 0.42;
         return 0;
     }
     readonly property real tzHeightRatio: showTimezone ? (showDate ? 0.15 : 0.35) : 0
@@ -95,13 +102,13 @@ MouseArea {
     function dateFormatter(d: date): string {
         const format = Plasmoid.configuration.dateFormat;
         if (format === "custom") {
-            return Qt.locale().toString(d, Plasmoid.configuration.customDateFormat);
+            return root.displayLocale.toString(d, Plasmoid.configuration.customDateFormat);
         } else if (format === "isoDate") {
             return Qt.formatDate(d, Qt.ISODate);
         } else if (format === "longDate") {
-            return Qt.formatDate(d, Qt.locale(), Locale.LongFormat);
+            return Qt.formatDate(d, root.displayLocale, Locale.LongFormat);
         } else {
-            return Qt.formatDate(d, Qt.locale(), Locale.ShortFormat);
+            return Qt.formatDate(d, root.displayLocale, Locale.ShortFormat);
         }
     }
 
@@ -122,24 +129,43 @@ MouseArea {
         trackSeconds: Plasmoid.configuration.showSeconds === 2 // Always
     }
 
+    TextMetrics {
+        id: timeMetrics
+        font: timeLabel.font
+        text: timeLabel.text
+    }
+
+    TextMetrics {
+        id: dateMetrics
+        font: dateLabel.font
+        text: dateLabel.visible ? dateLabel.text : ""
+    }
+
+    TextMetrics {
+        id: timeZoneMetrics
+        font: timeZoneLabel.font
+        text: timeZoneLabel.visible ? timeZoneLabel.text : ""
+    }
+
     ColumnLayout {
         id: contentLayout
-        anchors.centerIn: parent
-        width: parent.width
+        anchors.left: parent.left
+        anchors.leftMargin: main.leftPadding
+        anchors.verticalCenter: parent.verticalCenter
         height: main.maxContentHeight
-        spacing: Kirigami.Units.smallSpacing / 2
+        spacing: 0
 
         PlasmaComponents.Label {
             id: timeLabel
 
-            Layout.fillWidth: true
+            Layout.alignment: Qt.AlignHCenter
             Layout.preferredHeight: main.maxContentHeight * main.timeHeightRatio
 
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             textFormat: Text.PlainText
 
-            text: Qt.locale().toString(clock.dateTime, Plasmoid.configuration.showSeconds === 2 ? root.timeFormatWithSeconds : root.timeFormat)
+            text: root.displayLocale.toString(clock.dateTime, Plasmoid.configuration.showSeconds === 2 ? root.timeFormatWithSeconds : root.timeFormat)
 
             font {
                 family: main.baseFont.family
@@ -162,7 +188,7 @@ MouseArea {
             id: dateLabel
 
             visible: main.showDate
-            Layout.fillWidth: true
+            Layout.alignment: Qt.AlignHCenter
             Layout.preferredHeight: main.maxContentHeight * main.dateHeightRatio
 
             horizontalAlignment: Text.AlignHCenter
@@ -176,7 +202,7 @@ MouseArea {
                 weight: main.baseFont.weight
                 italic: main.baseFont.italic
                 styleName: main.baseFont.styleName
-                pixelSize: Math.round(timeLabel.font.pixelSize * 0.65)
+                pixelSize: Math.round(timeLabel.font.pixelSize * 0.82)
                 features: { "tnum": 1 }
             }
         }
@@ -185,7 +211,7 @@ MouseArea {
             id: timeZoneLabel
 
             visible: main.showTimezone
-            Layout.fillWidth: true
+            Layout.alignment: Qt.AlignHCenter
             Layout.preferredHeight: main.maxContentHeight * main.tzHeightRatio
 
             horizontalAlignment: Text.AlignHCenter

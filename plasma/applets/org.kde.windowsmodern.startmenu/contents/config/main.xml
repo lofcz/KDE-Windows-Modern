@@ -70,7 +70,7 @@
     </entry>
 
     <entry name="showRightColumn" type="Bool">
-      <default>true</default>
+      <default>false</default>
     </entry>
     <entry name="rightColumnItems" type="StringList">
       <default>home,documents,pictures,music,downloads,recent,thispc,update,terminal,run</default>

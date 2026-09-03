@@ -29,6 +29,9 @@ PlasmoidItem {
     readonly property string currentTimeZone: currentClock.timeZone
     readonly property var currentTime: currentClock.dateTime
 
+    // Taskbar clock follows Windows English composition regardless of LC_TIME.
+    readonly property var displayLocale: Qt.locale("en_US")
+
     // Time format strings, updated by timeFormatCorrection().
     property string timeFormat
     property string timeFormatWithSeconds
@@ -58,14 +61,14 @@ PlasmoidItem {
     function formatTime(dateTime: date, showSeconds: bool): string {
         let formattedTime;
         if (showSeconds) {
-            formattedTime = Qt.locale().toString(dateTime, root.timeFormatWithSeconds);
+            formattedTime = root.displayLocale.toString(dateTime, root.timeFormatWithSeconds);
         } else {
-            formattedTime = Qt.locale().toString(dateTime, root.timeFormat);
+            formattedTime = root.displayLocale.toString(dateTime, root.timeFormat);
         }
 
         // If the date differs from the current clock's date, append the day name.
         if (dateTime.getDay() !== currentClock.dateTime.getDay()) {
-            formattedTime += " " + Qt.locale().toString(dateTime, "dddd");
+            formattedTime += " " + root.displayLocale.toString(dateTime, "dddd");
         }
 
         return formattedTime;
@@ -107,7 +110,7 @@ PlasmoidItem {
     }
 
     // Computes time format strings based on locale and user settings.
-    function timeFormatCorrection(timeFormatString = Qt.locale().timeFormat(Locale.ShortFormat)) {
+    function timeFormatCorrection(timeFormatString = root.displayLocale.timeFormat(Locale.ShortFormat)) {
         const regexp = /(hh*)(.+)(mm)/i;
         const match = regexp.exec(timeFormatString);
 

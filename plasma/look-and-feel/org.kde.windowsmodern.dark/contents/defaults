@@ -27,4 +27,4 @@ name=Windows-modern-dark
 Image=Windows-modern
 
 [ksplashrc][KSplash]
-Theme=none
+Theme=Win11

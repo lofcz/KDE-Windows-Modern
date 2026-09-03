@@ -33,12 +33,11 @@ Item {
     ColumnLayout {
         id: mainColumn
         anchors {
-            left: parent.left
-            right: parent.right
-            top: parent.top
+            fill: parent
             margins: Kirigami.Units.largeSpacing
+            bottomMargin: Kirigami.Units.largeSpacing * 2
         }
-        spacing: Kirigami.Units.largeSpacing
+        spacing: Kirigami.Units.mediumSpacing
 
         // ── Header: large time (with superscript AM/PM) and full date ──
         ColumnLayout {
@@ -57,29 +56,29 @@ Item {
                     verticalAlignment: Text.AlignVCenter
                     textFormat: Text.PlainText
                     text: {
-                        const fmt = root.timeFormatWithSeconds;
+                        const fmt = root.timeFormat;
                         // Render the AM/PM suffix separately so it can be smaller.
                         if (fmt.toLowerCase().includes("ap")) {
-                            return Qt.locale().toString(root.currentTime, fmt.replace(/\s+AP/i, ""));
+                            return root.displayLocale.toString(root.currentTime, fmt.replace(/\s+AP/i, ""));
                         }
-                        return Qt.locale().toString(root.currentTime, fmt);
+                        return root.displayLocale.toString(root.currentTime, fmt);
                     }
                     color: palette.text
                     font {
                         family: Kirigami.Theme.defaultFont.family
-                        weight: Font.Bold
-                        pixelSize: Kirigami.Units.gridUnit * 3
+                        weight: Font.DemiBold
+                        pixelSize: Kirigami.Units.gridUnit * 1.7
                         features: { "tnum": 1 }
                     }
                 }
 
                 PlasmaComponents.Label {
                     id: amPmLabel
-                    visible: root.timeFormatWithSeconds.toLowerCase().includes("ap")
+                    visible: root.timeFormat.toLowerCase().includes("ap")
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignTop
                     textFormat: Text.PlainText
-                    text: Qt.locale().toString(root.currentTime, "AP")
+                    text: root.displayLocale.toString(root.currentTime, "AP")
                     color: palette.text
                     font {
                         family: Kirigami.Theme.defaultFont.family
@@ -98,11 +97,11 @@ Item {
                 verticalAlignment: Text.AlignVCenter
                 textFormat: Text.PlainText
                 // Windows 11 omits the year from the date line.
-                text: Qt.locale().toString(root.currentTime, "dddd, MMMM d")
+                text: root.displayLocale.toString(root.currentTime, "dddd, MMMM d")
                 color: palette.textSecondary
                 font {
                     family: Kirigami.Theme.defaultFont.family
-                    pixelSize: Kirigami.Units.gridUnit * 1.1
+                    pixelSize: Math.round(Kirigami.Units.gridUnit * 0.95)
                 }
             }
         }
@@ -111,6 +110,7 @@ Item {
         CalendarView {
             id: calendarView
             Layout.fillWidth: true
+            Layout.fillHeight: true
             focus: true
         }
 

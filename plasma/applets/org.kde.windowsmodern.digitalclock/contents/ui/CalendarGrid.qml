@@ -16,9 +16,9 @@ import "Calendar.js" as Calendar
 Item {
     id: calendarGrid
 
-    // Square cells: height derived from width, clamped to avoid negative/zero sizes.
+    // Fill the popup: cells grow with the remaining height so day numbers stay readable.
     readonly property real cellWidth: Math.max(28, (width - (columns - 1) * spacing) / columns)
-    readonly property real cellHeight: cellWidth
+    readonly property real cellHeight: Math.max(28, (height - (rows - 1) * spacing) / rows)
 
     readonly property int columns: 7
     readonly property int rows: 6

@@ -1,0 +1,5 @@
+[AdaptiveTransparency]
+enabled=true
+
+[ContrastEffect]
+enabled=false

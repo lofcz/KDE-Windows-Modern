@@ -68,10 +68,10 @@ ColumnLayout {
         Item { Layout.fillWidth: true }
 
         AToolButton {
-            flat: true
             iconName: "go-previous"
             text: i18n("Back")
-            buttonHeight: 25
+            buttonHeight: 24
+            mirror: true
             Layout.rightMargin: Kirigami.Units.mediumSpacing
             onClicked: allAppsPage.backRequested()
         }

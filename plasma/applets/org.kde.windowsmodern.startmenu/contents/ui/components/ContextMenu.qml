@@ -40,7 +40,7 @@ Item {
         z: 100
         width: Kirigami.Units.gridUnit * 15
         height: menuColumn.implicitHeight + Kirigami.Units.smallSpacing
-        radius: Kirigami.Units.smallSpacing
+        radius: 8
         color: Kirigami.Theme.backgroundColor
         border.width: 1
         border.color: Qt.rgba(Kirigami.Theme.textColor.r,

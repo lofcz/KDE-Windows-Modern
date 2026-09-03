@@ -15,43 +15,47 @@ Item {
     readonly property bool vertical: (Plasmoid.formFactor == PlasmaCore.Types.Vertical)
     readonly property bool useCustomButtonImage: (Plasmoid.configuration.useCustomButtonImage
                                                   && Plasmoid.configuration.customButtonImage.length != 0)
-    readonly property bool hovered: mouseArea.containsMouse
-                                    || (dashWindow && dashWindow.dialogVisible)
+    readonly property bool menuOpen: dashWindow && dashWindow.dialogVisible
+    readonly property bool hovered: mouseArea.containsMouse || menuOpen
     property QtObject dashWindow: null
 
-    // Square cell = panel thickness. Never expand over neighboring tasks.
+    // Match Icon Tasks: cell is 91% of the panel strip we now fill.
+    readonly property int cellSize: Math.round(Math.max(vertical ? width : height, 1) * 0.91)
+    readonly property int iconSize: Math.round(cellSize * 0.58)
+
     Layout.fillWidth: false
     Layout.fillHeight: !vertical
-    Layout.minimumWidth: vertical ? 0 : Math.round(Math.max(height, 46) * 0.91)
-    Layout.preferredWidth: vertical ? implicitWidth : Math.round(Math.max(height, 46) * 0.91)
-    Layout.maximumWidth: vertical ? -1 : Math.round(Math.max(height, 46) * 0.91)
+    Layout.minimumWidth: vertical ? 0 : cellSize
+    Layout.preferredWidth: vertical ? -1 : cellSize
+    Layout.maximumWidth: vertical ? -1 : cellSize
+    Layout.minimumHeight: vertical ? cellSize : 0
+    Layout.preferredHeight: vertical ? cellSize : -1
+    Layout.maximumHeight: vertical ? cellSize : -1
 
-    implicitWidth: 36
-    implicitHeight: 46
+    implicitWidth: vertical ? 1 : cellSize
+    implicitHeight: vertical ? cellSize : 1
 
-    Plasmoid.status: dashWindow && dashWindow.dialogVisible ? PlasmaCore.Types.RequiresAttentionStatus : PlasmaCore.Types.PassiveStatus
+    Plasmoid.status: menuOpen ? PlasmaCore.Types.RequiresAttentionStatus : PlasmaCore.Types.PassiveStatus
 
-    // Same Win11 soft tile as Icon Tasks hover.
     Rectangle {
         id: hoverTile
         anchors.centerIn: parent
-        width: Math.round(Math.min(parent.width, parent.height) * 0.92)
-        height: width
+        width: root.cellSize
+        height: root.cellSize
         radius: Math.round(width * 0.22)
         color: "#FFFFFF"
-        opacity: root.hovered ? 0.10 : 0
-        Behavior on opacity { NumberAnimation { duration: 120; easing.type: Easing.OutCubic } }
+        opacity: root.hovered ? 0.12 : 0
+        Behavior on opacity { NumberAnimation { duration: 60 } }
     }
 
     Image {
-        id: buttonIcon
         anchors.centerIn: parent
-        width: Math.round(Math.min(Math.max(root.width, 1), Math.max(root.height, 1)) * 0.82)
+        width: root.iconSize
         height: width
         z: 1
         visible: root.useCustomButtonImage
         source: root.useCustomButtonImage ? Plasmoid.configuration.customButtonImage : ""
-        fillMode: Image.Stretch
+        fillMode: Image.PreserveAspectFit
         smooth: true
         antialiasing: true
         asynchronous: false
@@ -61,7 +65,7 @@ Item {
 
     Kirigami.Icon {
         anchors.centerIn: parent
-        width: Math.round(Math.min(Math.max(root.width, 1), Math.max(root.height, 1)) * 0.82)
+        width: root.iconSize
         height: width
         z: 1
         visible: !root.useCustomButtonImage
@@ -84,6 +88,8 @@ Item {
 
     Component.onCompleted: {
         dashWindow = menuRepComponent.createObject(root);
+        if (dashWindow)
+            dashWindow.compactButton = root;
         Plasmoid.activated.connect(function() {
             if (dashWindow)
                 dashWindow.toggle();

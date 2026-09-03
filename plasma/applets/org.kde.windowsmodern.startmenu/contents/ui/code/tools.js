@@ -21,27 +21,87 @@ function resolveFavoriteId(favoriteId, url) {
     return "";
 }
 
+function isUninstallAction(action) {
+    if (!action) {
+        return false;
+    }
+    var id = action.actionId || "";
+    var text = action.text || "";
+    if (id === "manageApplication") {
+        return true;
+    }
+    if (text.indexOf("Uninstall") !== -1 || text.indexOf("Manage Add-On") !== -1
+            || text.indexOf("Manage Add-on") !== -1) {
+        return true;
+    }
+    return false;
+}
+
+function compactSeparators(acts) {
+    var out = [];
+    for (var i = 0; i < acts.length; i++) {
+        var a = acts[i];
+        if (a && a.type === "separator") {
+            if (out.length === 0 || out[out.length - 1].type === "separator") {
+                continue;
+            }
+            out.push(a);
+            continue;
+        }
+        out.push(a);
+    }
+    if (out.length > 0 && out[out.length - 1].type === "separator") {
+        out.pop();
+    }
+    return out;
+}
+
 // Build the full context-menu action list for an app: the app's own
-// actions (Run in terminal, Uninstall, …) followed by a pin/unpin
-// favorite action.  Used by both the All Apps list and search results so
-// the right-click menu is identical for the same app in either place.
+// actions followed by a pin/unpin favorite action.  Used by both the
+// All Apps list and search results so the right-click menu is identical
+// for the same app in either place.
 function buildAppActions(i18n, favoriteModel, favoriteId, url, actionList) {
     var acts = [];
+    var hasEditPin = false;
 
     if (actionList && actionList.length > 0) {
         for (var i = 0; i < actionList.length; i++) {
-            acts.push(actionList[i]);
+            var action = actionList[i];
+            if (isUninstallAction(action)) {
+                continue;
+            }
+            if (action && action.actionId === "editApplication") {
+                acts.push({
+                    text: i18n("Edit Pin"),
+                    icon: action.icon || "document-edit",
+                    actionId: action.actionId,
+                    actionArgument: action.actionArgument
+                });
+                hasEditPin = true;
+                continue;
+            }
+            acts.push(action);
         }
+    }
+
+    if (!hasEditPin) {
+        acts.push({
+            text: i18n("Edit Pin"),
+            icon: "document-edit",
+            actionId: "editApplication"
+        });
     }
 
     var favId = resolveFavoriteId(favoriteId, url);
     var favActions = createFavoriteActions(i18n, favoriteModel, favId);
     if (favActions) {
-        if (acts.length > 0) acts.push({ "type": "separator" });
+        if (acts.length > 0) {
+            acts.push({ "type": "separator" });
+        }
         acts = acts.concat(favActions);
     }
 
-    return acts;
+    return compactSeparators(acts);
 }
 
 function createFavoriteActions(i18n, favoriteModel, favoriteId) {
@@ -56,13 +116,13 @@ function createFavoriteActions(i18n, favoriteModel, favoriteId) {
         var action = {};
 
         if (favoriteModel.isFavorite(favoriteId)) {
-            action.text = i18n("Remove from Favorites");
-            action.icon = "bookmark-remove";
+            action.text = i18n("Unpin from Start");
+            action.icon = "window-unpin";
             action.actionId = "_kicker_favorite_remove";
         } else if (favoriteModel.maxFavorites === -1
                    || favoriteModel.count < favoriteModel.maxFavorites) {
-            action.text = i18n("Add to Favorites");
-            action.icon = "bookmark-new";
+            action.text = i18n("Pin to Start");
+            action.icon = "window-pin";
             action.actionId = "_kicker_favorite_add";
         } else {
             return null;
@@ -123,8 +183,8 @@ function createFavoriteActions(i18n, favoriteModel, favoriteId) {
     });
 
     return [{
-        text: i18n("Show in Favorites"),
-        icon: "favorite",
+        text: i18n("Pin to Start"),
+        icon: "window-pin",
         subActions: actions
     }];
 }

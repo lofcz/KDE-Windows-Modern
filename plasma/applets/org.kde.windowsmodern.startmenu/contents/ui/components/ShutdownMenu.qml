@@ -36,18 +36,6 @@ Item {
         onClicked: root.close()
     }
 
-    // Soft drop shadow (Win11 flyouts sit on a faint dark halo)
-    Rectangle {
-        visible: popup.visible
-        z: 99
-        x: popup.x + 2
-        y: popup.y + 4
-        width: popup.width
-        height: popup.height
-        radius: popup.radius
-        color: Qt.rgba(0, 0, 0, 0.45)
-    }
-
     Rectangle {
         id: popup
         visible: false

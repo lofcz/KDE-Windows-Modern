@@ -5,6 +5,7 @@
  ***************************************************************************/
 
 import QtQuick
+import QtQuick.Layouts
 
 import org.kde.plasma.plasmoid
 
@@ -18,9 +19,28 @@ PlasmoidItem {
 
     anchors.fill: parent
 
+    readonly property bool vertical: Plasmoid.formFactor == PlasmaCore.Types.Vertical
+
+    // Same as Icon Tasks: ignore panel SVG margins so this applet is
+    // the full 46px strip, not a 30px icon hole.
+    Plasmoid.constraintHints: Plasmoid.CanFillArea
+
+    // Compact and full MUST be different Components. When they are the
+    // same, Plasma sizes the applet to the icon.
+    switchWidth: 10000
+    switchHeight: 10000
     preferredRepresentation: compactRep
     compactRepresentation: compactRep
-    fullRepresentation: compactRep
+    fullRepresentation: dummyFullRep
+    activationTogglesExpanded: false
+
+    Component {
+        id: dummyFullRep
+        Item {
+            implicitWidth: 0
+            implicitHeight: 0
+        }
+    }
 
     function action_menuedit() {
         processRunner.runMenuEditor();
@@ -146,9 +166,4 @@ PlasmoidItem {
         }
     ]
 
-    Component.onCompleted: {
-        if (Plasmoid.hasOwnProperty("activationTogglesExpanded")) {
-            Plasmoid.activationTogglesExpanded = true;
-        }
-    }
 }

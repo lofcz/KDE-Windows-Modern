@@ -8,15 +8,25 @@
   <rect id="hint-right-margin" x="92" y="0" width="8" height="8" opacity="0"/>
   <rect id="hint-bottom-margin" x="0" y="92" width="8" height="8" opacity="0"/>
 
-  <rect id="topleft" x="0" y="0" width="7" height="7" fill="#2C2C2C"/>
-  <rect id="topright" x="93" y="0" width="7" height="7" fill="#2C2C2C"/>
-  <rect id="bottomleft" x="0" y="93" width="7" height="7" fill="#2C2C2C"/>
-  <rect id="bottomright" x="93" y="93" width="7" height="7" fill="#2C2C2C"/>
+  <path id="topleft" d="M 8,8 L 8,0 A 8,8 0 0 0 0,8 Z" fill="#2C2C2C"/>
+  <path id="topright" d="M 92,8 L 92,0 A 8,8 0 0 1 100,8 Z" fill="#2C2C2C"/>
+  <path id="bottomleft" d="M 8,92 L 0,92 A 8,8 0 0 0 8,100 Z" fill="#2C2C2C"/>
+  <path id="bottomright" d="M 92,92 L 100,92 A 8,8 0 0 1 92,100 Z" fill="#2C2C2C"/>
 
-  <rect id="top" x="7" y="0" width="86" height="1" fill="#3F3F3F"/>
-  <rect id="bottom" x="7" y="99" width="86" height="1" fill="#3F3F3F"/>
-  <rect id="left" x="0" y="7" width="1" height="86" fill="#3F3F3F"/>
-  <rect id="right" x="99" y="7" width="1" height="86" fill="#3F3F3F"/>
+  <path id="topleft-stroke" d="M 8,0 A 8,8 0 0 0 0,8 L 1,8 A 7,7 0 0 1 8,1 Z" fill="#3F3F3F"/>
+  <path id="topright-stroke" d="M 92,0 A 8,8 0 0 1 100,8 L 99,8 A 7,7 0 0 0 92,1 Z" fill="#3F3F3F"/>
+  <path id="bottomleft-stroke" d="M 0,92 A 8,8 0 0 0 8,100 L 8,99 A 7,7 0 0 1 1,92 Z" fill="#3F3F3F"/>
+  <path id="bottomright-stroke" d="M 100,92 A 8,8 0 0 1 92,100 L 92,99 A 7,7 0 0 0 99,92 Z" fill="#3F3F3F"/>
 
-  <rect id="center" x="1" y="1" width="98" height="98" fill="#2C2C2C"/>
+  <rect id="top" x="8" y="1" width="84" height="7" fill="#2C2C2C"/>
+  <rect id="bottom" x="8" y="92" width="84" height="7" fill="#2C2C2C"/>
+  <rect id="left" x="1" y="8" width="7" height="84" fill="#2C2C2C"/>
+  <rect id="right" x="92" y="8" width="7" height="84" fill="#2C2C2C"/>
+
+  <rect id="top-stroke" x="8" y="0" width="84" height="1" fill="#3F3F3F"/>
+  <rect id="bottom-stroke" x="8" y="99" width="84" height="1" fill="#3F3F3F"/>
+  <rect id="left-stroke" x="0" y="8" width="1" height="84" fill="#3F3F3F"/>
+  <rect id="right-stroke" x="99" y="8" width="1" height="84" fill="#3F3F3F"/>
+
+  <rect id="center" x="8" y="8" width="84" height="84" fill="#2C2C2C"/>
 </svg>

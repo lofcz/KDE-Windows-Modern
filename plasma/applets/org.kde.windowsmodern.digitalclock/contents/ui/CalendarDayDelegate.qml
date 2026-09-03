@@ -93,7 +93,7 @@ MouseArea {
                 }
                 return palette.textDisabled;
             }
-            font.pixelSize: Kirigami.Theme.defaultFont.pixelSize
+            font.pixelSize: Math.max(Kirigami.Theme.defaultFont.pixelSize + 3, Math.round(dayDelegate.height * 0.4))
         }
 
         // Event dots.

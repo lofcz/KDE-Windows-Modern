@@ -28,7 +28,7 @@ ColumnLayout {
 
     readonly property int firstDayOfWeek: Plasmoid.configuration.firstDayOfWeek > -1
         ? Plasmoid.configuration.firstDayOfWeek
-        : Qt.locale().firstDayOfWeek
+        : root.displayLocale.firstDayOfWeek
 
     readonly property bool showWeekNumbers: Plasmoid.configuration.showWeekNumbers
 
@@ -145,12 +145,12 @@ ColumnLayout {
             horizontalAlignment: Text.AlignLeft
             verticalAlignment: Text.AlignVCenter
             textFormat: Text.PlainText
-            text: Qt.locale().standaloneMonthName(calendarView.displayedMonth, Locale.LongFormat)
+            text: root.displayLocale.standaloneMonthName(calendarView.displayedMonth, Locale.LongFormat)
                   + " " + calendarView.displayedYear
             color: palette.text
             font {
-                weight: Font.Bold
-                pixelSize: Kirigami.Units.gridUnit
+                weight: Font.DemiBold
+                pixelSize: Math.round(Kirigami.Units.gridUnit * 1.2)
             }
         }
 
@@ -186,7 +186,7 @@ ColumnLayout {
             textFormat: Text.PlainText
             text: i18nc("@label week number column header", "Wk")
             color: palette.textSecondary
-            font.pixelSize: Kirigami.Theme.smallFont.pixelSize
+            font.pixelSize: Math.round(Kirigami.Theme.defaultFont.pixelSize * 1.15)
         }
 
         Repeater {
@@ -197,9 +197,9 @@ ColumnLayout {
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 textFormat: Text.PlainText
-                text: Qt.locale().standaloneDayName((calendarView.firstDayOfWeek + index) % 7, Locale.ShortFormat)
+                text: root.displayLocale.standaloneDayName((calendarView.firstDayOfWeek + index) % 7, Locale.ShortFormat)
                 color: palette.textSecondary
-                font.pixelSize: Kirigami.Theme.smallFont.pixelSize
+                font.pixelSize: Math.round(Kirigami.Theme.defaultFont.pixelSize * 1.15)
             }
         }
     }
@@ -225,7 +225,7 @@ ColumnLayout {
                     textFormat: Text.PlainText
                     text: Calendar.isoWeekNumber(new Date(calendarView.gridStartDate.getTime() + index * 7 * 86400000))
                     color: palette.textSecondary
-                    font.pixelSize: Kirigami.Theme.smallFont.pixelSize
+                    font.pixelSize: Math.round(Kirigami.Theme.defaultFont.pixelSize * 1.15)
                 }
             }
         }
@@ -233,6 +233,7 @@ ColumnLayout {
         CalendarGrid {
             id: calendarGrid
             Layout.fillWidth: true
+            Layout.fillHeight: true
             Layout.preferredHeight: calendarGrid.cellHeight * 6 + calendarGrid.spacing * 5
         }
     }

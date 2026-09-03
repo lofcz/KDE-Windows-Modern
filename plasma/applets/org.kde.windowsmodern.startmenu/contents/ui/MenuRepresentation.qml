@@ -40,12 +40,17 @@ import "code/theme.js" as Theme
 Item {
     id: main
 
-    // Must stay a 0×0 child of the Start button. A real size here
-    // overlays the taskbar and steals clicks from the other icons.
+    // Parked off-screen so this wrapper cannot steal hover from the
+    // Start button. The Dialog is its own window.
     width: 0
     height: 0
+    x: -10000
+    y: -10000
     implicitWidth: 0
     implicitHeight: 0
+    clip: true
+
+    property Item compactButton: parent
 
     // CompactRepresentation reads this for panel attention state.
     readonly property bool dialogVisible: root.visible
@@ -166,7 +171,8 @@ Item {
 
         function popupPosition(width, height) {
             var screen = kicker.screenGeometry;
-            var appletTopLeft = parent.mapToGlobal(0, 0);
+            var button = compactButton ? compactButton : parent
+            var appletTopLeft = button.mapToGlobal(0, 0);
             var horizMidPoint = screen.x + (screen.width / 2);
             var vertMidPoint = screen.y + (screen.height / 2);
             var offset = Kirigami.Units.smallSpacing;
@@ -225,15 +231,13 @@ Item {
         FocusScope {
             id: rootItem
 
-            readonly property int leftColumnWidth: Kirigami.Units.gridUnit * 14
+            readonly property int leftColumnWidth: Kirigami.Units.gridUnit * 36
             readonly property int rightColumnWidth: Kirigami.Units.gridUnit * 10
-            // Height derived from ~10 list rows + header + padding rather
-            // than a fixed grid-unit count.
             readonly property int rowHeight: Kirigami.Units.gridUnit * 2
-            readonly property int mainContentHeight: rowHeight * 12 + Kirigami.Units.gridUnit * 2
+            readonly property int mainContentHeight: Kirigami.Units.gridUnit * 28
 
-            width: leftColumnWidth + rightColumnWidth + Kirigami.Units.gridUnit * 3
-            height: mainContentHeight + bottomBar.height + Kirigami.Units.gridUnit * 3
+            width: Kirigami.Units.gridUnit * 36
+            height: Kirigami.Units.gridUnit * 42
             focus: true
 
             // Win11 Start flyout: entire shell (background + content) motion.
@@ -365,15 +369,69 @@ Item {
                 property var favoritesModel: sourceModel ? sourceModel.favoritesModel : null
             }
 
-            // ── Two-column main content area ──────────────────────────────
-            RowLayout {
-                id: mainColumns
+            // ── Search (Windows 11 puts this at the top) ─────────────────
+            Rectangle {
+                id: topSearchBar
                 anchors.top: parent.top
                 anchors.left: parent.left
                 anchors.right: parent.right
-                anchors.bottom: bottomBar.top
                 anchors.topMargin: Kirigami.Units.gridUnit
-                anchors.bottomMargin: Kirigami.Units.gridUnit
+                anchors.leftMargin: Kirigami.Units.gridUnit
+                anchors.rightMargin: Kirigami.Units.gridUnit
+                height: bottomBarContent.implicitHeight + Kirigami.Units.smallSpacing
+                color: "transparent"
+
+                BottomBar {
+                    id: bottomBarContent
+                    anchors.fill: parent
+                    showPowerButton: false
+
+                    onSearchTextChanged: {
+                        searchPage.resultsView.queryString = bottomBarContent.searchText;
+                        if (root.leftColumnState === 2) {
+                            searchPage.resultsView.contentY = 0;
+                            searchPage.resultsView.currentIndex = 0;
+                        }
+                    }
+                    onSearchFocusResults: rootItem.focusActivePageResults()
+                    onSearchNavUp: {
+                        if (root.leftColumnState === 0) pinnedPage.navigateUp();
+                        else if (root.leftColumnState === 1) allAppsPage.navigateUp();
+                        else if (root.leftColumnState === 2) searchPage.navigateUp();
+                    }
+                    onSearchNavDown: {
+                        if (root.leftColumnState === 0) pinnedPage.navigateDown();
+                        else if (root.leftColumnState === 1) allAppsPage.navigateDown();
+                        else if (root.leftColumnState === 2) searchPage.navigateDown();
+                    }
+                    onSearchActivateFirstResult: {
+                        rootItem.activateCurrentItem();
+                    }
+                    onSearchEscapePressed: {
+                        if (bottomBarContent.searchText !== "") {
+                            bottomBarContent.searchText = "";
+                        } else {
+                            root.closeMenu();
+                        }
+                    }
+                    onTabOut: rootItem.focusActivePageResults()
+                    onPowerMenuRequested: {
+                        powerMenu.visualParent = footerPowerButton;
+                        powerMenu.open();
+                    }
+                    onPowerShutdownRequested: powerMenu.triggerShutdown()
+                }
+            }
+
+            // ── Main content area ─────────────────────────────────────────
+            RowLayout {
+                id: mainColumns
+                anchors.top: topSearchBar.bottom
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.bottom: footerBar.top
+                anchors.topMargin: Kirigami.Units.largeSpacing
+                anchors.bottomMargin: Kirigami.Units.smallSpacing
                 anchors.leftMargin: Kirigami.Units.gridUnit
                 anchors.rightMargin: Kirigami.Units.gridUnit
                 spacing: 0
@@ -424,6 +482,7 @@ Item {
                 // ── Vertical separator ───────────────────────────────────────
                 Rectangle {
                     id: columnSeparator
+                    visible: false
                     Layout.preferredWidth: 1
                     Layout.fillHeight: true
                     color: Kirigami.Theme.textColor
@@ -438,7 +497,7 @@ Item {
                     Layout.preferredWidth: rootItem.rightColumnWidth
                     Layout.rightMargin: Kirigami.Units.mediumSpacing
                     spacing: Kirigami.Units.smallSpacing
-                    visible: Plasmoid.configuration.showRightColumn
+                    visible: false
 
                     // ── User avatar (circular) ──────────────────────────────
                     Item {
@@ -505,20 +564,14 @@ Item {
                 }
             }
 
-            // ── Compound bottom bar: [Search field] + [Shut down >] ────────
+            // ── Footer: user + power (Windows 11 Start) ───────────────────
             Rectangle {
-                id: bottomBar
-                width: parent.width
-                height: bottomBarContent.implicitHeight + Kirigami.Units.gridUnit
+                id: footerBar
                 anchors.bottom: parent.bottom
-                anchors.bottomMargin: Kirigami.Units.gridUnit
                 anchors.left: parent.left
-                anchors.leftMargin: Kirigami.Units.gridUnit
                 anchors.right: parent.right
-                anchors.rightMargin: Kirigami.Units.gridUnit
-                Kirigami.Theme.colorSet: Kirigami.Theme.Header
-                Kirigami.Theme.inherit: false
-                color: "transparent"
+                height: Kirigami.Units.gridUnit * 3.5
+                color: Qt.rgba(0, 0, 0, 0.18)
 
                 Rectangle {
                     anchors.top: parent.top
@@ -528,50 +581,81 @@ Item {
                     opacity: Theme.separatorOpacity
                 }
 
-                BottomBar {
-                    id: bottomBarContent
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    anchors.verticalCenter: parent.verticalCenter
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.leftMargin: Kirigami.Units.gridUnit
+                    anchors.rightMargin: Kirigami.Units.gridUnit
+                    spacing: Kirigami.Units.largeSpacing
 
-                    onSearchTextChanged: {
-                        // Explicitly push the query to Milou ResultsView.
-                        searchPage.resultsView.queryString = bottomBarContent.searchText;
-                        // Reset scroll to top on new query — only when
-                        // the search page is active to avoid warnings
-                        // from setting properties on a non-visible view.
-                        if (root.leftColumnState === 2) {
-                            searchPage.resultsView.contentY = 0;
-                            searchPage.resultsView.currentIndex = 0;
+                    Item {
+                        id: footerAvatar
+                        Layout.preferredWidth: Kirigami.Units.iconSizes.medium
+                        Layout.preferredHeight: Kirigami.Units.iconSizes.medium
+
+                        Image {
+                            anchors.fill: parent
+                            source: {
+                                var faceUrl = kuser.faceIconUrl.toString();
+                                if (faceUrl !== "")
+                                    return faceUrl;
+                                return "file:///usr/share/icons/breeze/apps/48/kuser.svg";
+                            }
+                            cache: false
+                            fillMode: Image.PreserveAspectCrop
+                            layer.enabled: true
+                            layer.effect: OpacityMask {
+                                maskSource: Rectangle {
+                                    width: footerAvatar.width
+                                    height: footerAvatar.height
+                                    radius: footerAvatar.width / 2
+                                }
+                            }
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: executable.exec("systemsettings kcm_users")
                         }
                     }
-                    onSearchFocusResults: rootItem.focusActivePageResults()
-                    onSearchNavUp: {
-                        if (root.leftColumnState === 0) pinnedPage.navigateUp();
-                        else if (root.leftColumnState === 1) allAppsPage.navigateUp();
-                        else if (root.leftColumnState === 2) searchPage.navigateUp();
+
+                    PlasmaComponents3.Label {
+                        Layout.fillWidth: true
+                        text: kuser.fullName || kuser.loginName
+                        elide: Text.ElideRight
+                        color: Kirigami.Theme.textColor
                     }
-                    onSearchNavDown: {
-                        if (root.leftColumnState === 0) pinnedPage.navigateDown();
-                        else if (root.leftColumnState === 1) allAppsPage.navigateDown();
-                        else if (root.leftColumnState === 2) searchPage.navigateDown();
-                    }
-                    onSearchActivateFirstResult: {
-                        rootItem.activateCurrentItem();
-                    }
-                    onSearchEscapePressed: {
-                        if (bottomBarContent.searchText !== "") {
-                            bottomBarContent.searchText = "";
-                        } else {
-                            root.closeMenu();
+
+                    Item {
+                        id: footerPowerButton
+                        Layout.preferredWidth: 36
+                        Layout.preferredHeight: 36
+
+                        Rectangle {
+                            anchors.fill: parent
+                            radius: 4
+                            color: footerPowerMouse.containsMouse ? "#3F3F3F" : "transparent"
+                        }
+
+                        Kirigami.Icon {
+                            anchors.centerIn: parent
+                            width: 18
+                            height: 18
+                            source: "system-shutdown"
+                        }
+
+                        MouseArea {
+                            id: footerPowerMouse
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                powerMenu.visualParent = footerPowerButton;
+                                powerMenu.open();
+                            }
                         }
                     }
-                    onTabOut: rootItem.focusActivePageResults()
-                    onPowerMenuRequested: {
-                        powerMenu.visualParent = bottomBarContent.splitButton;
-                        powerMenu.open();
-                    }
-                    onPowerShutdownRequested: powerMenu.triggerShutdown()
                 }
             }
 

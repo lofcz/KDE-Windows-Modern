@@ -22,6 +22,7 @@ RowLayout {
     width: parent.width
 
     property alias searchText: searchFieldInput.text
+    property bool showPowerButton: true
 
     // The split button item, exposed so the shell can use it as the
     // visualParent for the power-options popup.
@@ -50,7 +51,7 @@ RowLayout {
         id: searchFieldInput
         Layout.fillWidth: true
         focus: true
-        placeholderText: i18n("Search programs and files")
+        placeholderText: i18n("Search for apps, settings, and documents")
         topPadding: 8
         bottomPadding: 8
         leftPadding: Kirigami.Units.gridUnit + Kirigami.Units.iconSizes.small
@@ -104,6 +105,7 @@ RowLayout {
     // Win11: a single power icon that opens the flyout
     Item {
         id: shutdownSplit
+        visible: bottomBar.showPowerButton
         Layout.alignment: Qt.AlignVCenter
         implicitWidth: 36
         implicitHeight: 36
