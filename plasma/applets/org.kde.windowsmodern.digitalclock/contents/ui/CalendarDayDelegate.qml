@@ -8,12 +8,14 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Controls as QQC2
-import QtQuick.Layouts
 
 import org.kde.plasma.components as PlasmaComponents
 import org.kde.plasma.workspace.calendar as PlasmaCalendar
 import org.kde.kirigami as Kirigami
 
+// One day cell. Windows 11 CalendarView day items are circular in every
+// state: today is a filled accent circle, the selected day an accent ring,
+// hover/press a subtle translucent circle.
 MouseArea {
     id: dayDelegate
 
@@ -23,7 +25,6 @@ MouseArea {
     Win11Palette { id: palette }
 
     hoverEnabled: true
-    cursorShape: Qt.PointingHandCursor
 
     // Events for this day, queried from the shared DaysModel.
     readonly property var dayEvents: daysModel ? daysModel.eventsForDate(dayData.date) : []
@@ -40,22 +41,27 @@ MouseArea {
 
     Rectangle {
         id: dayBackground
-        anchors.fill: parent
-        radius: dayData.isToday ? width / 2 : 4
+        anchors.centerIn: parent
+        width: Math.min(parent.width, parent.height) - 2
+        height: width
+        radius: width / 2
         color: {
             if (dayData.isToday) {
-                return palette.accent;
-            } else if (dayDelegate.containsPress) {
+                if (dayDelegate.containsPress) {
+                    return Qt.alpha(palette.accent, 0.8);
+                }
+                return dayDelegate.containsMouse ? Qt.alpha(palette.accent, 0.9) : palette.accent;
+            }
+            if (dayDelegate.containsPress) {
                 return palette.pressed;
-            } else if (dayDelegate.containsMouse) {
+            }
+            if (dayDelegate.containsMouse) {
                 return palette.hover;
-            } else if (dayData.isSelected) {
-                return palette.selected;
             }
             return "transparent";
         }
-        border.color: dayData.isSelected && !dayData.isToday ? palette.surfaceBorder : "transparent"
-        border.width: 1
+        border.color: dayData.isSelected && !dayData.isToday ? palette.accent : "transparent"
+        border.width: 2
 
         Behavior on color {
             ColorAnimation {
@@ -65,53 +71,49 @@ MouseArea {
         }
     }
 
-    scale: dayDelegate.containsPress ? 0.96 : 1.0
-
-    Behavior on scale {
-        NumberAnimation {
-            duration: Kirigami.Units.shortDuration
-            easing.type: Easing.InOutQuad
+    PlasmaComponents.Label {
+        id: dayLabel
+        anchors.centerIn: parent
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+        textFormat: Text.PlainText
+        text: dayData.day
+        color: {
+            if (dayData.isToday) {
+                return palette.accentText;
+            }
+            if (dayData.isCurrentMonth) {
+                return palette.text;
+            }
+            return palette.textSecondary;
+        }
+        font {
+            family: Kirigami.Theme.defaultFont.family
+            pixelSize: 14
+            weight: dayData.isToday ? Font.DemiBold : Font.Normal
+            features: { "tnum": 1 }
         }
     }
 
-    ColumnLayout {
-        anchors.centerIn: parent
-        spacing: 1
+    // Event dots sit inside the circle below the number without moving it.
+    Row {
+        id: eventDotsRow
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: dayBackground.bottom
+        anchors.bottomMargin: 5
+        visible: dayDelegate.hasEvents
+        spacing: 2
 
-        PlasmaComponents.Label {
-            id: dayLabel
-            Layout.alignment: Qt.AlignHCenter
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            textFormat: Text.PlainText
-            text: dayData.day
-            color: {
-                if (dayData.isToday) {
-                    return palette.accentText;
-                } else if (dayData.isCurrentMonth) {
-                    return palette.text;
-                }
-                return palette.textDisabled;
-            }
-            font.pixelSize: Math.max(Kirigami.Theme.defaultFont.pixelSize + 3, Math.round(dayDelegate.height * 0.4))
-        }
-
-        // Event dots.
-        RowLayout {
-            id: eventDotsRow
-            Layout.alignment: Qt.AlignHCenter
-            visible: dayDelegate.hasEvents
-            spacing: 2
-
-            Repeater {
-                model: Math.min(3, dayDelegate.dayEvents.length)
-                delegate: Rectangle {
-                    required property int index
-                    width: 4
-                    height: 4
-                    radius: 2
-                    color: dayDelegate.dayEvents[index].eventColor || palette.accent
-                }
+        Repeater {
+            model: Math.min(3, dayDelegate.dayEvents.length)
+            delegate: Rectangle {
+                required property int index
+                width: 3
+                height: 3
+                radius: 1.5
+                color: dayData.isToday
+                    ? palette.accentText
+                    : (dayDelegate.dayEvents[index].eventColor || palette.accent)
             }
         }
     }

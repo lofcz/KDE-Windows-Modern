@@ -20,11 +20,10 @@ MouseArea {
     property color hoverColor: "#3F3F3F"
     property color pressedColor: "#4A4A4A"
 
-    width: Kirigami.Units.gridUnit * 1.75
-    height: Kirigami.Units.gridUnit * 1.5
+    width: 32
+    height: 28
 
     hoverEnabled: true
-    cursorShape: Qt.PointingHandCursor
 
     Rectangle {
         anchors.fill: parent
@@ -41,9 +40,17 @@ MouseArea {
     }
 
     Canvas {
+        id: glyph
         anchors.centerIn: parent
-        width: 10
-        height: 6
+        width: 12
+        height: 8
+        opacity: root.containsPress ? 0.6 : 1
+
+        Connections {
+            target: root
+            function onGlyphColorChanged() { glyph.requestPaint(); }
+            function onUpChanged() { glyph.requestPaint(); }
+        }
 
         onPaint: {
             const ctx = getContext("2d");
@@ -54,13 +61,13 @@ MouseArea {
             ctx.lineJoin = "round";
             ctx.beginPath();
             if (root.up) {
-                ctx.moveTo(0, 5);
-                ctx.lineTo(5, 0);
-                ctx.lineTo(10, 5);
+                ctx.moveTo(1, 6.5);
+                ctx.lineTo(6, 1.5);
+                ctx.lineTo(11, 6.5);
             } else {
-                ctx.moveTo(0, 1);
-                ctx.lineTo(5, 6);
-                ctx.lineTo(10, 1);
+                ctx.moveTo(1, 1.5);
+                ctx.lineTo(6, 6.5);
+                ctx.lineTo(11, 1.5);
             }
             ctx.stroke();
         }

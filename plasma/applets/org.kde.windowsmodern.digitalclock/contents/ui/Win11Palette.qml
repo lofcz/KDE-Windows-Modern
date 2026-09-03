@@ -22,8 +22,10 @@ QtObject {
     readonly property color textSecondary:    isDark ? "#9C9C9C" : "#5A5A5A"
     readonly property color textDisabled:     isDark ? "#5A5A5A" : "#A0A0A0"
     readonly property color accent:           isDark ? "#4CC2FF" : "#0067C0"
-    readonly property color accentText:       "#FFFFFF"
-    readonly property color hover:            isDark ? "#3F3F3F" : "#E9E9E9"
-    readonly property color pressed:          isDark ? "#4A4A4A" : "#DADADA"
+    // TextOnAccentFillColorPrimary: the dark-theme accent is light, so text on it is black.
+    readonly property color accentText:       isDark ? "#000000" : "#FFFFFF"
+    // SubtleFillColorSecondary / Tertiary — translucent so they sit on any acrylic.
+    readonly property color hover:            isDark ? Qt.rgba(1, 1, 1, 0.06) : Qt.rgba(0, 0, 0, 0.037)
+    readonly property color pressed:          isDark ? Qt.rgba(1, 1, 1, 0.04) : Qt.rgba(0, 0, 0, 0.024)
     readonly property color selected:         isDark ? "#2C2C2C" : "#F3F3F3"
 }

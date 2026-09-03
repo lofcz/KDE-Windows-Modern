@@ -7,25 +7,23 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import QtQuick.Layouts
 
 import org.kde.kirigami as Kirigami
 
 import "Calendar.js" as Calendar
 
+// 7x6 grid of square day cells. Cell size and spacing come from
+// CalendarView so the day-of-week header shares the exact same columns.
 Item {
     id: calendarGrid
 
-    // Fill the popup: cells grow with the remaining height so day numbers stay readable.
-    readonly property real cellWidth: Math.max(28, (width - (columns - 1) * spacing) / columns)
-    readonly property real cellHeight: Math.max(28, (height - (rows - 1) * spacing) / rows)
-
     readonly property int columns: 7
     readonly property int rows: 6
-    property real spacing: Kirigami.Units.smallSpacing / 2
+    readonly property int cellSize: calendarView.cellSize
+    readonly property int spacing: calendarView.cellSpacing
 
-    Layout.preferredHeight: cellHeight * rows + spacing * (rows - 1)
-    Layout.minimumHeight: 240
+    implicitWidth: columns * cellSize + (columns - 1) * spacing
+    implicitHeight: rows * cellSize + (rows - 1) * spacing
 
     function crossfade() {
         grid.opacity = 0;
@@ -52,14 +50,13 @@ Item {
             delegate: CalendarDayDelegate {
                 required property var modelData
 
-                width: calendarGrid.cellWidth
-                height: calendarGrid.cellHeight
+                width: calendarGrid.cellSize
+                height: calendarGrid.cellSize
 
                 dayData: modelData
                 daysModel: calendarView.calendarBackend.daysModel
             }
         }
-
     }
 
     NumberAnimation {
@@ -69,19 +66,5 @@ Item {
         to: 1
         duration: Kirigami.Units.shortDuration
         easing.type: Easing.InOutQuad
-    }
-
-    // Scroll wheel over the grid navigates months.
-    MouseArea {
-        anchors.fill: parent
-        acceptedButtons: Qt.NoButton
-        onWheel: wheel => {
-            if (wheel.angleDelta.y > 0) {
-                calendarView.previousMonth();
-            } else {
-                calendarView.nextMonth();
-            }
-            wheel.accepted = true;
-        }
     }
 }

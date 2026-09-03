@@ -18,15 +18,34 @@ Item {
 
     Win11Palette { id: palette }
 
-    // Size the popup based on configuration: width is capped at expandedWidth
-    // and the height keeps a fixed 340:450 (width:height) aspect ratio.
+    readonly property int padding: 16
+
+    // Width comes from configuration; height follows the content so there is
+    // no dead space below the calendar grid. Minimum and maximum are pinned
+    // to the same values so a stale user-resized popup size (popupWidth/
+    // popupHeight in the applet config) cannot override them.
     implicitWidth: Plasmoid.configuration.expandedWidth
+    Layout.minimumWidth: Plasmoid.configuration.expandedWidth
     Layout.preferredWidth: Plasmoid.configuration.expandedWidth
     Layout.maximumWidth: Plasmoid.configuration.expandedWidth
-    implicitHeight: Math.round(Plasmoid.configuration.expandedWidth * 450 / 340)
+    implicitHeight: mainColumn.implicitHeight + padding * 2
+    Layout.minimumHeight: implicitHeight
     Layout.preferredHeight: implicitHeight
     Layout.maximumHeight: implicitHeight
     clip: true
+
+    readonly property int contentWidth: Math.max(0, width - padding * 2)
+
+    // The popup item stays alive while hidden, so jump back to today (and the
+    // month view) every time the flyout is opened.
+    Connections {
+        target: root
+        function onExpandedChanged(): void {
+            if (root.expanded) {
+                calendarView.resetToToday();
+            }
+        }
+    }
 
     // The popup fill, border and shadow are supplied by the Plasma theme's
     // dialogs/background.svg; we only lay out the content here.
@@ -34,40 +53,43 @@ Item {
         id: mainColumn
         anchors {
             fill: parent
-            margins: Kirigami.Units.largeSpacing
-            bottomMargin: Kirigami.Units.largeSpacing * 2
+            margins: expandedRoot.padding
         }
-        spacing: Kirigami.Units.mediumSpacing
+        spacing: 0
 
-        // ── Header: large time (with superscript AM/PM) and full date ──
+        // ── Header: time (with superscript AM/PM) and full date, aligned with the grid ──
         ColumnLayout {
             id: headerColumn
-            Layout.fillWidth: true
-            spacing: Kirigami.Units.smallSpacing / 2
+            Layout.alignment: Qt.AlignHCenter
+            Layout.preferredWidth: calendarView.gridWidth
+            Layout.bottomMargin: 8
+            spacing: 0
 
             RowLayout {
                 id: timeRow
-                Layout.alignment: Qt.AlignHCenter
-                spacing: Kirigami.Units.smallSpacing / 2
+                Layout.leftMargin: calendarView.headerInset
+                spacing: 3
 
                 PlasmaComponents.Label {
                     id: timeHeader
-                    horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                     textFormat: Text.PlainText
                     text: {
-                        const fmt = root.timeFormat;
-                        // Render the AM/PM suffix separately so it can be smaller.
-                        if (fmt.toLowerCase().includes("ap")) {
-                            return root.displayLocale.toString(root.currentTime, fmt.replace(/\s+AP/i, ""));
+                        // Format with the full pattern (so "h" stays 12-hour when the
+                        // pattern has AP) and drop the AM/PM token from the result; it
+                        // is rendered separately as a smaller superscript.
+                        const full = root.displayLocale.toString(root.currentTime, root.timeFormat);
+                        if (!root.timeFormat.toLowerCase().includes("ap")) {
+                            return full;
                         }
-                        return root.displayLocale.toString(root.currentTime, fmt);
+                        const ap = root.displayLocale.toString(root.currentTime, "AP");
+                        return full.replace(ap, "").trim();
                     }
                     color: palette.text
                     font {
                         family: Kirigami.Theme.defaultFont.family
                         weight: Font.DemiBold
-                        pixelSize: Kirigami.Units.gridUnit * 1.7
+                        pixelSize: 28
                         features: { "tnum": 1 }
                     }
                 }
@@ -75,42 +97,40 @@ Item {
                 PlasmaComponents.Label {
                     id: amPmLabel
                     visible: root.timeFormat.toLowerCase().includes("ap")
-                    horizontalAlignment: Text.AlignLeft
-                    verticalAlignment: Text.AlignTop
+                    Layout.alignment: Qt.AlignTop
+                    Layout.topMargin: 5
                     textFormat: Text.PlainText
                     text: root.displayLocale.toString(root.currentTime, "AP")
                     color: palette.text
                     font {
                         family: Kirigami.Theme.defaultFont.family
                         weight: Font.Bold
-                        pixelSize: Math.round(timeHeader.font.pixelSize * 0.45)
+                        pixelSize: 12
                     }
-                    Layout.alignment: Qt.AlignTop
-                    Layout.topMargin: timeHeader.font.pixelSize * 0.12
                 }
             }
 
             PlasmaComponents.Label {
                 id: dateHeader
                 Layout.fillWidth: true
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
+                Layout.leftMargin: calendarView.headerInset
+                elide: Text.ElideRight
                 textFormat: Text.PlainText
                 // Windows 11 omits the year from the date line.
                 text: root.displayLocale.toString(root.currentTime, "dddd, MMMM d")
                 color: palette.textSecondary
                 font {
                     family: Kirigami.Theme.defaultFont.family
-                    pixelSize: Math.round(Kirigami.Units.gridUnit * 0.95)
+                    pixelSize: 14
                 }
             }
         }
 
-        // ── Calendar grid ──
+        // ── Calendar ──
         CalendarView {
             id: calendarView
             Layout.fillWidth: true
-            Layout.fillHeight: true
+            availableWidth: expandedRoot.contentWidth
             focus: true
         }
 
@@ -118,6 +138,7 @@ Item {
         TimeZoneView {
             id: timeZoneView
             Layout.fillWidth: true
+            Layout.topMargin: visible ? 12 : 0
             Layout.preferredHeight: visible ? Kirigami.Units.gridUnit * 8 : 0
             visible: Plasmoid.configuration.selectedTimeZones.length > 1 || Plasmoid.configuration.showLocalTimezone
         }
