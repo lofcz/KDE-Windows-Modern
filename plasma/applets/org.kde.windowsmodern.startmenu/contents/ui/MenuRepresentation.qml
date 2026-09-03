@@ -40,8 +40,21 @@ import "code/theme.js" as Theme
 Item {
     id: main
 
-    onVisibleChanged: {
-        root.visible = !root.visible
+    // Must stay a 0×0 child of the Start button. A real size here
+    // overlays the taskbar and steals clicks from the other icons.
+    width: 0
+    height: 0
+    implicitWidth: 0
+    implicitHeight: 0
+
+    // CompactRepresentation reads this for panel attention state.
+    readonly property bool dialogVisible: root.visible
+
+    function toggle() {
+        if (root.visible && !root.animatingClose)
+            root.hideAnimated();
+        else
+            root.showAnimated();
     }
 
     Plasmoid.status: root.visible ? PlasmaCore.Types.RequiresAttentionStatus : PlasmaCore.Types.PassiveStatus
@@ -52,15 +65,18 @@ Item {
         objectName: "popupWindow"
         flags: Qt.WindowStaysOnTopHint
         location: PlasmaCore.Types.Floating
-        hideOnWindowDeactivate: true
+        // Manual close so we can play the Win11 dismiss animation.
+        hideOnWindowDeactivate: false
 
-        // Opaque mode forces the solid dialog background variant; otherwise
-        // let the desktop theme choose between default/translucent.
-        backgroundHints: Plasmoid.configuration.menuTranslucency === Theme.menuTranslucencyOpaque
-                         ? PlasmaCore.Dialog.SolidBackground
-                         : PlasmaCore.Dialog.StandardBackground
+        // No stock dialog chrome — we draw the shell inside rootItem so the
+        // Win11 open/close animation scales/fades the whole Start surface.
+        backgroundHints: PlasmaCore.Dialog.NoBackground
 
         property bool searching: bottomBarContent.searchText !== ""
+        property bool animatingClose: false
+        property bool animatingOpen: false
+        // Ignore the brief inactive blip while the dialog is first mapping.
+        property bool acceptDeactivate: false
 
         // Left-column state: 0 = pinned, 1 = all apps, 2 = search results
         property int leftColumnState: 0
@@ -82,9 +98,22 @@ Item {
                 reset();
             } else {
                 leftColumnState = 0;
+                animatingClose = false;
+                animatingOpen = false;
+                acceptDeactivate = false;
                 sharedContextMenu.close();
                 powerMenu.close();
             }
+        }
+
+        // Click-away / focus loss → animated dismiss (Win11 behavior).
+        onActiveChanged: {
+            if (active) {
+                acceptDeactivate = true;
+                return;
+            }
+            if (acceptDeactivate && visible && !animatingClose && !animatingOpen)
+                hideAnimated();
         }
 
         onHeightChanged: if (visible) reposition()
@@ -96,7 +125,7 @@ Item {
         }
 
         function toggle() {
-            main.visible = !main.visible
+            main.toggle();
         }
 
         function reset() {
@@ -108,8 +137,31 @@ Item {
             Qt.callLater(bottomBarContent.focusSearch);
         }
 
+        // Windows 11 Start: animate the whole shell (chrome + content).
+        function showAnimated() {
+            if (visible && !animatingClose)
+                return;
+            closeAnim.stop();
+            animatingClose = false;
+            animatingOpen = true;
+            rootItem.opacity = 0;
+            rootItem.scale = 0.95;
+            rootItem.slideY = 20;
+            visible = true;
+            openAnim.restart();
+        }
+
+        function hideAnimated() {
+            if (!visible || animatingClose)
+                return;
+            openAnim.stop();
+            animatingOpen = false;
+            animatingClose = true;
+            closeAnim.restart();
+        }
+
         function closeMenu() {
-            root.visible = false;
+            hideAnimated();
         }
 
         function popupPosition(width, height) {
@@ -118,6 +170,19 @@ Item {
             var horizMidPoint = screen.x + (screen.width / 2);
             var vertMidPoint = screen.y + (screen.height / 2);
             var offset = Kirigami.Units.smallSpacing;
+            // Anchor to the Start button's top edge (the compact applet),
+            // not screen-height minus icon size (that sits in the panel)
+            // and not availableScreenRect (that is the full screen here).
+            var gap = 12;
+            var buttonTop = appletTopLeft.y;
+            if (buttonTop < screen.y + screen.height * 0.7
+                    || buttonTop > screen.y + screen.height) {
+                buttonTop = screen.y + screen.height - 44;
+            }
+
+            function abovePanel(x) {
+                return Qt.point(x, buttonTop - height - gap);
+            }
 
             var menuPos = Plasmoid.configuration.displayPosition;
 
@@ -126,23 +191,21 @@ Item {
                 return Qt.point(horizMidPoint - width / 2, vertMidPoint - height / 2);
             } else if (menuPos === 2) {
                 // Center-bottom (above panel)
-                return Qt.point(horizMidPoint - width / 2,
-                                screen.y + screen.height - height - kicker.height - offset);
+                return abovePanel(horizMidPoint - width / 2);
             } else if (menuPos === 3) {
                 // Left-bottom (above panel, left-aligned)
-                return Qt.point(screen.x + offset,
-                                screen.y + screen.height - height - kicker.height - offset);
+                return abovePanel(screen.x + offset);
             } else {
                 // menuPos 0 — follow panel: center horizontally over the
-                // start button, sit flush against the panel's top edge.
+                // start button, sit above the panel's top edge.
                 var centerX = appletTopLeft.x + (kicker.width / 2) - (width / 2);
                 centerX = Math.max(screen.x + offset,
                                    Math.min(centerX, screen.x + screen.width - width - offset));
                 switch (Plasmoid.location) {
                 case PlasmaCore.Types.BottomEdge:
-                    return Qt.point(centerX, screen.y + screen.height - height - kicker.height - offset);
+                    return abovePanel(centerX);
                 case PlasmaCore.Types.TopEdge:
-                    return Qt.point(centerX, screen.y + kicker.height + offset);
+                    return Qt.point(centerX, appletTopLeft.y + kicker.height + gap);
                 case PlasmaCore.Types.LeftEdge:
                     return Qt.point(appletTopLeft.x + kicker.width + offset,
                                     Math.max(screen.y + offset,
@@ -154,7 +217,7 @@ Item {
                                              Math.min(appletTopLeft.y + (kicker.height / 2) - (height / 2),
                                                       screen.y + screen.height - height - offset)));
                 default:
-                    return Qt.point(centerX, screen.y + screen.height - height - kicker.height - offset);
+                    return abovePanel(centerX);
                 }
             }
         }
@@ -172,6 +235,86 @@ Item {
             width: leftColumnWidth + rightColumnWidth + Kirigami.Units.gridUnit * 3
             height: mainContentHeight + bottomBar.height + Kirigami.Units.gridUnit * 3
             focus: true
+
+            // Win11 Start flyout: entire shell (background + content) motion.
+            opacity: 1
+            scale: 1
+            transformOrigin: Item.Bottom
+            property real slideY: 0
+            transform: Translate { y: rootItem.slideY }
+
+            // Shell chrome drawn here (Dialog has NoBackground) so scale/fade
+            // applies to the window surface, not only the widgets inside.
+            Item {
+                id: shellChrome
+                anchors.fill: parent
+                z: -1
+
+                // Soft outer shadow under the opaque shell
+                Rectangle {
+                    anchors.fill: parent
+                    anchors.margins: -1
+                    radius: 9
+                    color: "#000000"
+                    opacity: 0.40
+                    z: -1
+                }
+
+                // Opaque Win11 Start surface (animates with rootItem)
+                Rectangle {
+                    anchors.fill: parent
+                    radius: 8
+                    color: Kirigami.Theme.backgroundColor
+                    border.width: 1
+                    border.color: Qt.rgba(1, 1, 1, Theme.popupBorderOpacity)
+                }
+            }
+
+            ParallelAnimation {
+                id: openAnim
+                NumberAnimation {
+                    target: rootItem; property: "opacity"
+                    from: 0; to: 1; duration: 188
+                    easing.type: Easing.OutCubic
+                }
+                NumberAnimation {
+                    target: rootItem; property: "scale"
+                    from: 0.95; to: 1.0; duration: 188
+                    easing.type: Easing.OutCubic
+                }
+                NumberAnimation {
+                    target: rootItem; property: "slideY"
+                    from: 20; to: 0; duration: 188
+                    easing.type: Easing.OutCubic
+                }
+                onFinished: root.animatingOpen = false
+            }
+
+            ParallelAnimation {
+                id: closeAnim
+                NumberAnimation {
+                    target: rootItem; property: "opacity"
+                    to: 0; duration: 125
+                    easing.type: Easing.InCubic
+                }
+                NumberAnimation {
+                    target: rootItem; property: "scale"
+                    to: 0.96; duration: 125
+                    easing.type: Easing.InCubic
+                }
+                NumberAnimation {
+                    target: rootItem; property: "slideY"
+                    to: 12; duration: 125
+                    easing.type: Easing.InCubic
+                }
+                onFinished: {
+                    root.visible = false;
+                    root.animatingClose = false;
+                    rootItem.opacity = 1;
+                    rootItem.scale = 1;
+                    rootItem.slideY = 0;
+                }
+            }
 
             // Note: do NOT auto-redirect to the search field here.
             // onFocusChanged fires when any child calls forceActiveFocus(),

@@ -101,88 +101,32 @@ RowLayout {
         }
     }
 
-    // ── Right: Shut down split button ─────────────────────────────────
-    // One rounded container; left zone triggers shutdown directly, right
-    // chevron zone opens a menu with Lock / Sleep / Restart / Shut down.
+    // Win11: a single power icon that opens the flyout
     Item {
         id: shutdownSplit
         Layout.alignment: Qt.AlignVCenter
-        implicitWidth: splitRow.implicitWidth + Kirigami.Units.largeSpacing * 2
-        implicitHeight: Math.floor(Kirigami.Units.gridUnit * 1.6)
+        implicitWidth: 36
+        implicitHeight: 36
 
         Rectangle {
-            id: splitBg
             anchors.fill: parent
-            radius: Kirigami.Units.smallSpacing
-            color: splitMouse.containsMouse
-                   ? Qt.rgba(Kirigami.Theme.textColor.r,
-                             Kirigami.Theme.textColor.g,
-                             Kirigami.Theme.textColor.b, Theme.buttonFlatHoverOpacity)
-                   : Qt.rgba(Kirigami.Theme.textColor.r,
-                             Kirigami.Theme.textColor.g,
-                             Kirigami.Theme.textColor.b, Theme.buttonFlatBackgroundOpacity)
-            border.width: 1
-            border.color: Qt.rgba(Kirigami.Theme.textColor.r,
-                                   Kirigami.Theme.textColor.g,
-                                   Kirigami.Theme.textColor.b, Theme.buttonBorderOpacity)
-            Behavior on color { ColorAnimation { duration: 90 } }
+            radius: 4
+            color: powerMouse.containsMouse ? "#3F3F3F" : "transparent"
         }
 
-        Row {
-            id: splitRow
+        Kirigami.Icon {
             anchors.centerIn: parent
-            spacing: Kirigami.Units.smallSpacing
-
-            Kirigami.Icon {
-                anchors.verticalCenter: parent.verticalCenter
-                width: Kirigami.Units.iconSizes.smallMedium
-                height: width
-                source: "system-shutdown"
-            }
-
-            PlasmaComponents3.Label {
-                id: shutdownLabel
-                anchors.verticalCenter: parent.verticalCenter
-                text: i18n("Shut down")
-                color: Kirigami.Theme.textColor
-                font.pointSize: Kirigami.Theme.defaultFont.pointSize - 1
-            }
-
-            // Subtle divider between the two zones.
-            Rectangle {
-                anchors.verticalCenter: parent.verticalCenter
-                width: 1
-                height: shutdownSplit.height * 0.5
-                color: Qt.rgba(Kirigami.Theme.textColor.r,
-                               Kirigami.Theme.textColor.g,
-                               Kirigami.Theme.textColor.b, Theme.buttonDividerOpacity)
-            }
-
-            Kirigami.Icon {
-                anchors.verticalCenter: parent.verticalCenter
-                width: Kirigami.Units.iconSizes.small
-                height: width
-                source: "go-next"
-                opacity: Theme.buttonChevronOpacity
-            }
+            width: 18
+            height: 18
+            source: "system-shutdown"
         }
 
-        // Single MouseArea: hover for the whole button; click position
-        // decides whether to shut down (left) or open the menu (right).
         MouseArea {
-            id: splitMouse
+            id: powerMouse
             anchors.fill: parent
             hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
-            onClicked: mouse => {
-                // Chevron zone = rightmost portion (icon + padding).
-                var chevronWidth = Kirigami.Units.iconSizes.small + Kirigami.Units.smallSpacing * 2;
-                if (mouse.x > shutdownSplit.width - chevronWidth) {
-                    bottomBar.powerMenuRequested();
-                } else {
-                    bottomBar.powerShutdownRequested();
-                }
-            }
+            onClicked: bottomBar.powerMenuRequested()
         }
     }
 }

@@ -2,8 +2,7 @@
  *   License: GPL-3.0-or-later
  *   Author: Jeysef
  *
- *   Single row inside the power-options popup: icon + label, hover
- *   highlight, click to activate.
+ *   Windows 11 flyout row: icon + label, muted hover fill.
  ***************************************************************************/
 
 import QtQuick
@@ -11,8 +10,6 @@ import QtQuick.Layouts
 
 import org.kde.plasma.components as PlasmaComponents3
 import org.kde.kirigami as Kirigami
-
-import "../code/theme.js" as Theme
 
 Item {
     id: option
@@ -23,38 +20,39 @@ Item {
 
     signal activated
 
-    width: parent ? parent.width : Kirigami.Units.gridUnit * 10
-    height: Math.floor(Kirigami.Units.gridUnit * 1.6)
+    width: parent ? parent.width : Kirigami.Units.gridUnit * 11
+    height: 36
 
     Rectangle {
         anchors.fill: parent
-        anchors.margins: 1
-        radius: Kirigami.Units.smallSpacing / 2
-        color: option.optionEnabled && hoverArea.containsMouse
-               ? Kirigami.Theme.hoverColor
-               : "transparent"
-        opacity: option.optionEnabled && hoverArea.containsMouse ? Theme.opacityFull : Theme.opacityHidden
-        Behavior on opacity { NumberAnimation { duration: 80 } }
+        anchors.leftMargin: 4
+        anchors.rightMargin: 4
+        anchors.topMargin: 1
+        anchors.bottomMargin: 1
+        radius: 4
+        color: option.optionEnabled && hoverArea.containsMouse ? "#3F3F3F" : "transparent"
     }
 
     RowLayout {
-        id: powerRow
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.left: parent.left
-        anchors.leftMargin: Kirigami.Units.smallSpacing
-        spacing: Kirigami.Units.smallSpacing
+        anchors.fill: parent
+        anchors.leftMargin: 14
+        anchors.rightMargin: 12
+        spacing: 12
 
         Kirigami.Icon {
-            Layout.preferredWidth: Kirigami.Units.iconSizes.smallMedium
-            Layout.preferredHeight: Kirigami.Units.iconSizes.smallMedium
+            Layout.preferredWidth: 16
+            Layout.preferredHeight: 16
             source: option.iconSource
-            opacity: option.optionEnabled ? Theme.opacityFull : Theme.disabledIconOpacity
+            color: option.optionEnabled ? "#FFFFFF" : "#5A5A5A"
         }
 
         PlasmaComponents3.Label {
+            Layout.fillWidth: true
             text: option.label
-            color: option.optionEnabled ? Kirigami.Theme.textColor : Kirigami.Theme.disabledTextColor
-            font.pointSize: Kirigami.Theme.defaultFont.pointSize - 1
+            color: option.optionEnabled ? "#FFFFFF" : "#5A5A5A"
+            font.family: "Segoe UI"
+            font.pointSize: 10
+            elide: Text.ElideRight
         }
     }
 

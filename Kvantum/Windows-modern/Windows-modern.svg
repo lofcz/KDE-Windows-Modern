@@ -233,8 +233,8 @@
  <path id="menuitem-normal-top" d="m193 495h8v2h-8z" fill-rule="evenodd" opacity=".1" stroke-width=".70711"/>
  <path id="menuitem-normal-bottom" d="m193 505h8v2h-8z" fill-rule="evenodd" opacity=".1" stroke-width=".70711"/>
  <path id="menuitem-normal" d="m193 497h8v8h-8z" fill-rule="evenodd" opacity=".1"/>
- <path id="window-normal" d="m380 814.26h30v30h-30z" fill="#ffffff" fill-rule="evenodd" opacity=".8" style="paint-order:normal"/>
- <path id="window-normal-inactive" d="m412 814.26h30v30h-30z" fill="#ffffff" fill-rule="evenodd" opacity=".8" style="paint-order:normal"/>
+<path id="window-normal" d="m380 814.26h30v30h-30z" fill="#ffffff" fill-rule="evenodd" opacity="1" style="paint-order:normal"/>
+<path id="window-normal-inactive" d="m412 814.26h30v30h-30z" fill="#ffffff" fill-rule="evenodd" opacity="1" style="paint-order:normal"/>
  <rect id="menubar-normal" x="307" y="359" width="20" height="20" fill="#F9F9F9"/>
  <rect id="menubar-normal-left" transform="rotate(90)" x="359" y="-307" width="20" height="5" fill="#F9F9F9"/>
  <rect id="menubar-normal-topleft" transform="rotate(90)" x="354" y="-307" width="5" height="5" fill="#F9F9F9"/>
@@ -1728,7 +1728,7 @@
   <rect x="267" y="680" width="20" height="20" rx="2" ry="2" opacity=".2" stroke-width="2"/>
   <path d="m272.88 685.04c-0.21059 0-0.42224 0.0785-0.58204 0.23829l-0.0156 0.0156c-0.31962 0.31959-0.31962 0.84252 0 1.1621l3.5391 3.5391-3.5391 3.5391c-0.31952 0.31949-0.31952 0.84252 0 1.1621l0.0156 0.0156c0.31949 0.31959 0.84253 0.31959 1.1621 0l3.5391-3.5391 3.5391 3.5391c0.31951 0.31959 0.84252 0.31959 1.1621 0l0.0156-0.0156c0.3195-0.31948 0.3195-0.84261 0-1.1621l-3.5391-3.5391 3.5391-3.5391c0.3195-0.31959 0.31959-0.84262 0-1.1621l-0.0156-0.0156c-0.31968-0.31949-0.8426-0.31949-1.1621 0l-3.5391 3.5391-3.5391-3.5391c-0.15979-0.1598-0.36949-0.23829-0.58007-0.23829z" fill-rule="evenodd" opacity=".5"/>
  </g>
- <path id="tabframe-normal" d="m269 489v32h32v-32z" fill="#ffffff" opacity=".9"/>
+ <path id="tabframe-normal" d="m269 489v32h32v-32z" fill="#ffffff" opacity="1"/>
  <g id="tabframe-normal-left" transform="matrix(.8 0 0 .98462 248 441)">
   <path d="m26.25 81.251v-32.5h-2.5v32.5z" fill="#ffffff" opacity=".9" stroke-width=".70711"/>
   <path d="m21.25 48.752v32.5h2.4998v-32.5z" opacity=".15"/>
@@ -1796,30 +1796,30 @@
   <path d="m22 473v57l2 1e-5v-57z" fill="#ffffff" opacity=".8"/>
   <rect transform="rotate(90)" x="473" y="-22" width="57" height="6" fill="url(#linearGradient4855-3)" opacity=".15" stroke-width="1.037"/>
  </g>
- <path id="menu-normal" d="m111 473h48v48h-48z" fill="#ffffff" opacity=".8"/>
+ <path id="menu-normal" d="m111 473h48v48h-48z" fill="#F3F3F3" opacity="1"/>
  <g id="menu-normal-left" transform="matrix(.33333 0 0 1 69.247 -230.75)">
-  <path d="m116.26 703.75h6v48h-6z" fill="#ffffff" opacity=".8"/>
+  <path d="m116.26 703.75h6v48h-6z" fill="#ffffff" opacity="1"/>
  </g>
  <g id="menu-normal-topleft" transform="matrix(.33333 0 0 .33333 69.246 237.08)">
-  <path d="m122.26 698.75c-3.3229 1e-3 -5.9977 2.6768-5.9977 6h6z" fill="#ffffff" opacity=".8"/>
+  <path d="m122.26 698.75c-3.3229 1e-3 -5.9977 2.6768-5.9977 6h6z" fill="#ffffff" opacity="1"/>
  </g>
  <g id="menu-normal-top" transform="matrix(0 .33333 -1 0 862.75 431.25)">
-  <path d="m116.26 703.75h6v48h-6z" fill="#ffffff" opacity=".8"/>
+  <path d="m116.26 703.75h6v48h-6z" fill="#ffffff" opacity="1"/>
  </g>
  <g id="menu-normal-topright" transform="matrix(0 .33333 -.33333 0 394.92 431.25)">
-  <path d="m122.26 698.75c-3.3229 1e-3 -5.9977 2.6768-5.9977 6h6z" fill="#ffffff" opacity=".8"/>
+  <path d="m122.26 698.75c-3.3229 1e-3 -5.9977 2.6768-5.9977 6h6z" fill="#ffffff" opacity="1"/>
  </g>
  <g id="menu-normal-right" transform="matrix(-.33333 0 0 1 200.75 -230.75)">
-  <path d="m116.26 703.75h6v48h-6z" fill="#ffffff" opacity=".8"/>
+  <path d="m116.26 703.75h6v48h-6z" fill="#ffffff" opacity="1"/>
  </g>
  <g id="menu-normal-bottomright" transform="matrix(-.33333 0 0 -.33333 200.75 756.92)">
-  <path d="m122.26 698.75c-3.3229 1e-3 -5.9977 2.6768-5.9977 6h6z" fill="#ffffff" opacity=".8"/>
+  <path d="m122.26 698.75c-3.3229 1e-3 -5.9977 2.6768-5.9977 6h6z" fill="#ffffff" opacity="1"/>
  </g>
  <g id="menu-normal-bottom" transform="matrix(0 -.33333 1 0 -592.75 562.75)">
-  <path d="m116.26 703.75h6v48h-6z" fill="#ffffff" opacity=".8"/>
+  <path d="m116.26 703.75h6v48h-6z" fill="#ffffff" opacity="1"/>
  </g>
  <g id="menu-normal-bottomleft" transform="matrix(0 -.33333 .33333 0 -124.91 568.08)">
-  <path d="m138.25 698.74c-3.3229 1e-3 -5.9977 2.6768-5.9977 6h6z" fill="#ffffff" opacity=".8"/>
+  <path d="m138.25 698.74c-3.3229 1e-3 -5.9977 2.6768-5.9977 6h6z" fill="#ffffff" opacity="1"/>
  </g>
  <g id="menu-shadow-bottom" transform="matrix(.96 0 0 1 -36.236 -412.45)" fill-rule="evenodd">
   <g id="bottom" transform="matrix(-1 0 0 -.57142 302.75 1081.5)" fill="#343031">

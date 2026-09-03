@@ -57,8 +57,10 @@
   <rect id="focus-bottom" width="26" height="2" x="-57" y="154" rx="0" ry="0" style="fill:none;stroke-width:3.60555" />
   <rect id="focus-bottomright" width="2" height="2" x="-30" y="154" rx="0" ry="0" style="fill:none" />
   <g id="focus-center" transform="translate(-157,28)">
-    <rect id="rect1929" width="26" height="26" x="100" y="99" rx="4" ry="4" fill="#000000" fill-opacity="0.09" stroke="#000000" stroke-opacity="0.03" stroke-width="1" />
-    <rect id="rect2616" width="10" height="2" x="108" y="123" rx="1" ry="1" class="ColorScheme-ViewHover" style="fill:#0067C0;fill-opacity:1" />
+    <rect width="26" height="26" x="100" y="99" rx="6" ry="6"
+          fill="#000000" fill-opacity="0.08" stroke="none" />
+    <rect width="12" height="3" x="107" y="123" rx="1.5" ry="1.5"
+          fill="#005FB8" fill-opacity="1" stroke="none" />
   </g>
   <rect id="minimized-topleft" width="2" height="2" x="-58" y="-12.000009" rx="0" ry="0" style="fill:none" />
   <rect id="minimized-top" width="26" height="2" x="-55" y="-12.000009" rx="0" ry="0" style="fill:none;stroke-width:3.60555" />
@@ -69,8 +71,9 @@
   <rect id="minimized-bottom" width="26" height="2" x="-55" y="17.999994" rx="0" ry="0" style="fill:none;stroke-width:3.60555" />
   <rect id="minimized-bottomright" width="2" height="2" x="-28" y="17.999994" rx="0" ry="0" style="fill:none" />
   <g id="minimized-center" transform="translate(-155,-108)">
-    <rect id="rect1929-3" width="26" height="26" x="100" y="99" rx="3" ry="3" style="fill:none" />
-    <rect id="rect2616-1" width="4" height="2" x="111" y="123" rx="1" ry="1" class="ColorScheme-Text" fill="#858585" style="opacity:1" />
+    <rect width="26" height="26" x="100" y="99" rx="6" ry="6" fill="none" stroke="none" />
+    <rect width="4" height="3" x="111" y="123" rx="1.5" ry="1.5"
+          fill="#000000" fill-opacity="0.28" stroke="none" />
   </g>
   <rect id="hover-topleft" width="2" height="2" x="-60" y="80" rx="0" ry="0" style="fill:none" />
   <rect id="hover-top" width="26" height="2" x="-57" y="80" rx="0" ry="0" style="fill:none;stroke-width:3.60555" />
@@ -81,8 +84,8 @@
   <rect id="hover-bottom" width="26" height="2" x="-57" y="110" rx="0" ry="0" style="fill:none;stroke-width:3.60555" />
   <rect id="hover-bottomright" width="2" height="2" x="-30" y="110" rx="0" ry="0" style="fill:none" />
   <g id="hover-center" transform="translate(-157,-16)">
-    <rect id="rect1929-2" width="26" height="26" x="100" y="99" rx="4" ry="4" fill="#000000" fill-opacity="0.035" stroke="#000000" stroke-opacity="0.03" stroke-width="1" />
-    <rect id="rect2616-3" width="10" height="2" x="108" y="123" rx="1" ry="1" class="ColorScheme-ViewHover" style="fill:#0067C0;fill-opacity:1" />
+    <rect width="26" height="26" x="100" y="99" rx="6" ry="6"
+          fill="#000000" fill-opacity="0.06" stroke="none" />
   </g>
   <rect id="normal-topleft" width="2" height="2" x="-58.999996" y="31.999998" rx="0" ry="0" style="fill:none" />
   <rect id="normal-top" width="26" height="2" x="-55.999996" y="31.999998" rx="0" ry="0" style="fill:none;stroke-width:3.60555" />
@@ -93,8 +96,9 @@
   <rect id="normal-bottom" width="26" height="2" x="-55.999996" y="62" rx="0" ry="0" style="fill:none;stroke-width:3.60555" />
   <rect id="normal-bottomright" width="2" height="2" x="-28.999996" y="62" rx="0" ry="0" style="fill:none" />
   <g id="normal-center" transform="translate(-156,-64)">
-    <rect id="rect1929-1" width="26" height="26" x="100" y="99" rx="3" ry="3" style="fill:none" />
-    <rect id="rect2616-7" width="8" height="2" x="109" y="123" rx="1" ry="1" class="ColorScheme-Text" fill="#858585" style="opacity:1" />
+    <rect width="26" height="26" x="100" y="99" rx="6" ry="6" fill="none" stroke="none" />
+    <rect width="6" height="3" x="110" y="123" rx="1.5" ry="1.5"
+          fill="#000000" fill-opacity="0.40" stroke="none" />
   </g>
   <rect id="progress-topleft" width="2" height="2" x="-61.000011" y="176" rx="0" ry="0" style="fill:none" />
   <rect id="progress-top" width="26" height="2" x="-58.000011" y="176" rx="0" ry="0" style="fill:none;stroke-width:3.60555" />
@@ -304,4 +308,90 @@
   <rect id="thick-hint-bottom-margin" x="-57" y="94" width="4" height="4" fill="#ff00ff" />
   <rect id="thick-hint-right-margin" x="-35" y="94" width="4" height="4" fill="#ff00ff" />
   <rect id="thick-hint-left-margin" x="-46" y="105" width="4" height="4" fill="#ff00ff" />
+  <rect id="normal-hint-top-margin" x="-200" y="0" width="4" height="4" fill="#ff00ff" />
+  <rect id="normal-hint-bottom-margin" x="-200" y="8" width="4" height="4" fill="#ff00ff" />
+  <rect id="normal-hint-left-margin" x="-200" y="16" width="4" height="4" fill="#ff00ff" />
+  <rect id="normal-hint-right-margin" x="-192" y="16" width="4" height="4" fill="#ff00ff" />
+
+  <!-- Pinned launcher hover = same Win11 tile as running-task hover -->
+  <rect id="launcher-hover-topleft" width="2" height="2" x="-60" y="80" fill="none" />
+  <rect id="launcher-hover-top" width="26" height="2" x="-57" y="80" fill="none" />
+  <rect id="launcher-hover-left" width="2" height="26" x="-60" y="83" fill="none" />
+  <rect id="launcher-hover-right" width="2" height="26" x="-30" y="83" fill="none" />
+  <rect id="launcher-hover-topright" width="2" height="2" x="-30" y="80" fill="none" />
+  <rect id="launcher-hover-bottomleft" width="2" height="2" x="-60" y="110" fill="none" />
+  <rect id="launcher-hover-bottom" width="26" height="2" x="-57" y="110" fill="none" />
+  <rect id="launcher-hover-bottomright" width="2" height="2" x="-30" y="110" fill="none" />
+  <use id="launcher-hover-center" ns3:href="#hover-center" width="100%" height="100%" />
+  <rect id="south-launcher-hover-topleft" width="2" height="2" x="-60" y="80" fill="none" />
+  <rect id="south-launcher-hover-top" width="26" height="2" x="-57" y="80" fill="none" />
+  <rect id="south-launcher-hover-left" width="2" height="26" x="-60" y="83" fill="none" />
+  <rect id="south-launcher-hover-right" width="2" height="26" x="-30" y="83" fill="none" />
+  <rect id="south-launcher-hover-topright" width="2" height="2" x="-30" y="80" fill="none" />
+  <rect id="south-launcher-hover-bottomleft" width="2" height="2" x="-60" y="110" fill="none" />
+  <rect id="south-launcher-hover-bottom" width="26" height="2" x="-57" y="110" fill="none" />
+  <rect id="south-launcher-hover-bottomright" width="2" height="2" x="-30" y="110" fill="none" />
+  <use id="south-launcher-hover-center" ns3:href="#hover-center" width="100%" height="100%" />
+
+  <!-- state+hover: keep running/active indicator while showing hover tile -->
+  <rect id="focus-hover-topleft" width="2" height="2" x="-60" y="80" fill="none" />
+  <rect id="focus-hover-top" width="26" height="2" x="-57" y="80" fill="none" />
+  <rect id="focus-hover-left" width="2" height="26" x="-60" y="83" fill="none" />
+  <rect id="focus-hover-right" width="2" height="26" x="-30" y="83" fill="none" />
+  <rect id="focus-hover-topright" width="2" height="2" x="-30" y="80" fill="none" />
+  <rect id="focus-hover-bottomleft" width="2" height="2" x="-60" y="110" fill="none" />
+  <rect id="focus-hover-bottom" width="26" height="2" x="-57" y="110" fill="none" />
+  <rect id="focus-hover-bottomright" width="2" height="2" x="-30" y="110" fill="none" />
+  <g id="focus-hover-center" transform="translate(-157,-16)">
+    <rect width="26" height="26" x="100" y="99" rx="6" ry="6"
+          fill="#000000" fill-opacity="0.08" stroke="none" />
+    <rect width="12" height="3" x="107" y="123" rx="1.5" ry="1.5"
+          fill="#005FB8" fill-opacity="1" stroke="none" />
+  </g>
+  <rect id="normal-hover-topleft" width="2" height="2" x="-60" y="80" fill="none" />
+  <rect id="normal-hover-top" width="26" height="2" x="-57" y="80" fill="none" />
+  <rect id="normal-hover-left" width="2" height="26" x="-60" y="83" fill="none" />
+  <rect id="normal-hover-right" width="2" height="26" x="-30" y="83" fill="none" />
+  <rect id="normal-hover-topright" width="2" height="2" x="-30" y="80" fill="none" />
+  <rect id="normal-hover-bottomleft" width="2" height="2" x="-60" y="110" fill="none" />
+  <rect id="normal-hover-bottom" width="26" height="2" x="-57" y="110" fill="none" />
+  <rect id="normal-hover-bottomright" width="2" height="2" x="-30" y="110" fill="none" />
+  <g id="normal-hover-center" transform="translate(-157,-16)">
+    <rect width="26" height="26" x="100" y="99" rx="6" ry="6"
+          fill="#000000" fill-opacity="0.06" stroke="none" />
+    <rect width="6" height="3" x="110" y="123" rx="1.5" ry="1.5"
+          fill="#000000" fill-opacity="0.40" stroke="none" />
+  </g>
+  <rect id="minimized-hover-topleft" width="2" height="2" x="-60" y="80" fill="none" />
+  <rect id="minimized-hover-top" width="26" height="2" x="-57" y="80" fill="none" />
+  <rect id="minimized-hover-left" width="2" height="26" x="-60" y="83" fill="none" />
+  <rect id="minimized-hover-right" width="2" height="26" x="-30" y="83" fill="none" />
+  <rect id="minimized-hover-topright" width="2" height="2" x="-30" y="80" fill="none" />
+  <rect id="minimized-hover-bottomleft" width="2" height="2" x="-60" y="110" fill="none" />
+  <rect id="minimized-hover-bottom" width="26" height="2" x="-57" y="110" fill="none" />
+  <rect id="minimized-hover-bottomright" width="2" height="2" x="-30" y="110" fill="none" />
+  <g id="minimized-hover-center" transform="translate(-157,-16)">
+    <rect width="26" height="26" x="100" y="99" rx="6" ry="6"
+          fill="#000000" fill-opacity="0.06" stroke="none" />
+    <rect width="4" height="3" x="111" y="123" rx="1.5" ry="1.5"
+          fill="#000000" fill-opacity="0.28" stroke="none" />
+  </g>
+  <rect id="south-focus-hover-topleft" width="2" height="2" x="-60" y="80" fill="none" />
+  <rect id="south-focus-hover-top" width="26" height="2" x="-57" y="80" fill="none" />
+  <rect id="south-focus-hover-left" width="2" height="26" x="-60" y="83" fill="none" />
+  <rect id="south-focus-hover-right" width="2" height="26" x="-30" y="83" fill="none" />
+  <rect id="south-focus-hover-topright" width="2" height="2" x="-30" y="80" fill="none" />
+  <rect id="south-focus-hover-bottomleft" width="2" height="2" x="-60" y="110" fill="none" />
+  <rect id="south-focus-hover-bottom" width="26" height="2" x="-57" y="110" fill="none" />
+  <rect id="south-focus-hover-bottomright" width="2" height="2" x="-30" y="110" fill="none" />
+  <use id="south-focus-hover-center" ns3:href="#focus-hover-center" width="100%" height="100%" />
+  <rect id="south-normal-hover-topleft" width="2" height="2" x="-60" y="80" fill="none" />
+  <rect id="south-normal-hover-top" width="26" height="2" x="-57" y="80" fill="none" />
+  <rect id="south-normal-hover-left" width="2" height="26" x="-60" y="83" fill="none" />
+  <rect id="south-normal-hover-right" width="2" height="26" x="-30" y="83" fill="none" />
+  <rect id="south-normal-hover-topright" width="2" height="2" x="-30" y="80" fill="none" />
+  <rect id="south-normal-hover-bottomleft" width="2" height="2" x="-60" y="110" fill="none" />
+  <rect id="south-normal-hover-bottom" width="26" height="2" x="-57" y="110" fill="none" />
+  <rect id="south-normal-hover-bottomright" width="2" height="2" x="-30" y="110" fill="none" />
+  <use id="south-normal-hover-center" ns3:href="#normal-hover-center" width="100%" height="100%" />
 </svg>

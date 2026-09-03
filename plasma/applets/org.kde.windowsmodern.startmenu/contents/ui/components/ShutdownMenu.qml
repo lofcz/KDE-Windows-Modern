@@ -2,20 +2,15 @@
  *   License: GPL-3.0-or-later
  *   Author: Jeysef
  *
- *   Power options popup for the "Shut down" split button.  Rendered as
- *   an in-dialog floating panel (NOT a separate PlasmaComponents3.Menu
- *   window) so the parent dialog's hideOnWindowDeactivate does not fire
- *   and close the whole start menu.
+ *   Windows 11-style power flyout. In-dialog so hideOnWindowDeactivate
+ *   does not close the start menu.
  ***************************************************************************/
 
 import QtQuick
 import QtQuick.Layouts
 
-import org.kde.plasma.components as PlasmaComponents3
 import org.kde.plasma.private.sessions
 import org.kde.kirigami as Kirigami
-
-import "../code/theme.js" as Theme
 
 Item {
     id: root
@@ -33,8 +28,6 @@ Item {
         }
     }
 
-    // ── Invisible click-catcher that closes the popup when clicking ────
-    // outside its content.  Covers the entire parent (rootItem FocusScope).
     MouseArea {
         id: clickCatcher
         anchors.fill: parent
@@ -43,59 +36,55 @@ Item {
         onClicked: root.close()
     }
 
-    // ── The floating panel ─────────────────────────────────────────────
+    // Soft drop shadow (Win11 flyouts sit on a faint dark halo)
+    Rectangle {
+        visible: popup.visible
+        z: 99
+        x: popup.x + 2
+        y: popup.y + 4
+        width: popup.width
+        height: popup.height
+        radius: popup.radius
+        color: Qt.rgba(0, 0, 0, 0.45)
+    }
+
     Rectangle {
         id: popup
         visible: false
         z: 100
 
-        readonly property real panelWidth: Kirigami.Units.gridUnit * 10
-        width: panelWidth
-        height: powerColumn.implicitHeight + Kirigami.Units.smallSpacing
-        radius: Kirigami.Units.smallSpacing
-        color: Kirigami.Theme.backgroundColor
+        width: Kirigami.Units.gridUnit * 11
+        height: powerColumn.implicitHeight + 12
+        radius: 8
+        color: "#2C2C2C"
         border.width: 1
-        border.color: Qt.rgba(Kirigami.Theme.textColor.r,
-                               Kirigami.Theme.textColor.g,
-                               Kirigami.Theme.textColor.b, Theme.popupBorderOpacity)
-
-        // Soft shadow effect
-        layer.enabled: true
+        border.color: "#3F3F3F"
 
         Column {
             id: powerColumn
-            width: popup.panelWidth - Kirigami.Units.smallSpacing
+            width: popup.width - 8
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
-            anchors.topMargin: Kirigami.Units.smallSpacing / 2
-            spacing: 0
+            anchors.topMargin: 6
+            spacing: 2
 
-            PowerOption {
-                iconSource: "system-lock-screen"
-                label: i18n("Lock")
-                optionEnabled: sessionManager.canLock
-                onActivated: {
-                    sessionManager.lock()
-                    root.close()
-                }
-            }
-
-            PowerOption {
-                iconSource: "system-log-out"
-                label: i18n("Log out")
-                optionEnabled: sessionManager.canLogout
-                onActivated: {
-                    sessionManager.requestLogout()
-                    root.close()
-                }
-            }
-
+            // Win11 Start power flyout: Sleep, Shut down, Restart
             PowerOption {
                 iconSource: "system-suspend"
                 label: i18n("Sleep")
                 optionEnabled: sessionManager.canSuspend
                 onActivated: {
                     sessionManager.suspend()
+                    root.close()
+                }
+            }
+
+            PowerOption {
+                iconSource: "system-shutdown"
+                label: i18n("Shut down")
+                optionEnabled: sessionManager.canShutdown
+                onActivated: {
+                    sessionManager.requestShutdown()
                     root.close()
                 }
             }
@@ -110,58 +99,57 @@ Item {
                 }
             }
 
-            // Separator
             Rectangle {
-                width: powerColumn.width
+                width: powerColumn.width - 16
                 height: 1
-                color: Qt.rgba(Kirigami.Theme.textColor.r,
-                               Kirigami.Theme.textColor.g,
-                               Kirigami.Theme.textColor.b, Theme.separatorOpacity)
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: "#3F3F3F"
             }
 
             PowerOption {
-                iconSource: "system-shutdown"
-                label: i18n("Shut down")
-                optionEnabled: sessionManager.canShutdown
+                iconSource: "system-lock-screen"
+                label: i18n("Lock")
+                optionEnabled: sessionManager.canLock
                 onActivated: {
-                    sessionManager.requestShutdown()
+                    sessionManager.lock()
+                    root.close()
+                }
+            }
+
+            PowerOption {
+                iconSource: "system-log-out"
+                label: i18n("Sign out")
+                optionEnabled: sessionManager.canLogout
+                onActivated: {
+                    sessionManager.requestLogout()
                     root.close()
                 }
             }
         }
-
-        Behavior on opacity { NumberAnimation { duration: 90 } }
     }
 
-    // ── Positioning logic ──────────────────────────────────────────────
     function open() {
         if (!root.visualParent) return
 
         var popupW = popup.width
         var popupH = popup.height
-        var gap = Kirigami.Units.smallSpacing
+        var gap = 6
 
-        // Default: open above the button, right-aligned to its right edge.
         var pos = root.visualParent.mapToItem(root, root.visualParent.width - popupW, -popupH - gap)
 
-        // If the popup would go above the top of the dialog, open below
-        // the button instead.
         if (pos.y < gap) {
             pos.y = root.visualParent.mapToItem(root, 0, root.visualParent.height + gap).y
         }
 
-        // Clamp horizontally — keep the popup within the dialog bounds.
         pos.x = Math.max(gap, Math.min(pos.x, root.width - popupW - gap))
 
         popup.x = pos.x
         popup.y = pos.y
         popup.visible = true
-        popup.opacity = 1
     }
 
     function close() {
         popup.visible = false
-        popup.opacity = 0
         root.closed()
     }
 }
