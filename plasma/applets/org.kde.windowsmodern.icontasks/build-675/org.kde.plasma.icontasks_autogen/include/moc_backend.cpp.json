@@ -1,0 +1,239 @@
+{
+    "classes": [
+        {
+            "classInfos": [
+                {
+                    "name": "QML.Element",
+                    "value": "auto"
+                }
+            ],
+            "className": "Backend",
+            "enums": [
+                {
+                    "isClass": false,
+                    "isFlag": false,
+                    "lineNumber": 37,
+                    "name": "MiddleClickAction",
+                    "values": [
+                        "None",
+                        "Close",
+                        "NewInstance",
+                        "ToggleMinimized",
+                        "ToggleGrouping",
+                        "BringToCurrentDesktop"
+                    ]
+                }
+            ],
+            "lineNumber": 31,
+            "methods": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "launcherUrl",
+                            "type": "QUrl"
+                        },
+                        {
+                            "name": "parent",
+                            "type": "QObject*"
+                        }
+                    ],
+                    "index": 6,
+                    "lineNumber": 51,
+                    "name": "jumpListActions",
+                    "returnType": "QVariantList"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "launcherUrl",
+                            "type": "QUrl"
+                        },
+                        {
+                            "name": "showAllPlaces",
+                            "type": "bool"
+                        },
+                        {
+                            "name": "parent",
+                            "type": "QObject*"
+                        }
+                    ],
+                    "index": 7,
+                    "lineNumber": 52,
+                    "name": "placesActions",
+                    "returnType": "QVariantList"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "launcherUrl",
+                            "type": "QUrl"
+                        },
+                        {
+                            "name": "parent",
+                            "type": "QObject*"
+                        }
+                    ],
+                    "index": 8,
+                    "lineNumber": 53,
+                    "name": "recentDocumentActions",
+                    "returnType": "QVariantList"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "action",
+                            "type": "QAction*"
+                        }
+                    ],
+                    "index": 9,
+                    "isConst": true,
+                    "lineNumber": 54,
+                    "name": "setActionGroup",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "item",
+                            "type": "QQuickItem*"
+                        }
+                    ],
+                    "index": 10,
+                    "isConst": true,
+                    "lineNumber": 56,
+                    "name": "globalRect",
+                    "returnType": "QRect"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "url",
+                            "type": "QUrl"
+                        }
+                    ],
+                    "index": 11,
+                    "isConst": true,
+                    "lineNumber": 58,
+                    "name": "isApplication",
+                    "returnType": "bool"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "pid",
+                            "type": "qint64"
+                        }
+                    ],
+                    "index": 12,
+                    "isConst": true,
+                    "lineNumber": 60,
+                    "name": "parentPid",
+                    "returnType": "qint64"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "launcherUrl",
+                            "type": "QUrl"
+                        }
+                    ],
+                    "index": 13,
+                    "lineNumber": 62,
+                    "name": "tryDecodeApplicationsUrl",
+                    "returnType": "QUrl"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "launcherUrl",
+                            "type": "QUrl"
+                        }
+                    ],
+                    "index": 14,
+                    "lineNumber": 63,
+                    "name": "applicationCategories",
+                    "returnType": "QStringList"
+                }
+            ],
+            "object": true,
+            "qualifiedClassName": "Backend",
+            "signals": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "url",
+                            "type": "QUrl"
+                        }
+                    ],
+                    "index": 0,
+                    "isConst": true,
+                    "lineNumber": 66,
+                    "name": "addLauncher",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "index": 1,
+                    "lineNumber": 68,
+                    "name": "showAllPlaces",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "index": 2,
+                    "lineNumber": 69,
+                    "name": "aboutToSleep",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "index": 3,
+                    "lineNumber": 70,
+                    "name": "resumedFromSleep",
+                    "returnType": "void"
+                }
+            ],
+            "slots": [
+                {
+                    "access": "private",
+                    "index": 4,
+                    "isConst": true,
+                    "lineNumber": 73,
+                    "name": "handleRecentDocumentAction",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "sleeping",
+                            "type": "bool"
+                        }
+                    ],
+                    "index": 5,
+                    "lineNumber": 74,
+                    "name": "onPrepareForSleep",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QObject"
+                }
+            ]
+        }
+    ],
+    "inputFile": "backend.h",
+    "outputRevision": 69
+}

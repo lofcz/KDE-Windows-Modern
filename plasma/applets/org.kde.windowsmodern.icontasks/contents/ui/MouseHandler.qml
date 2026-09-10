@@ -37,11 +37,15 @@ DropArea {
             return;
         }
 
+        // Plasma 6.7.5: RtL horizontal TaskLists omit the leading spacer, but
+        // mouse coordinates still include it. Subtract that or drag-reorder
+        // thinks we are far to the right of the actual pointer.
+        const rtlSpacerAdjustment = target.LayoutMirroring.enabled ? tasks.width - target.width : 0;
         let above;
         if (isGroupDialog) {
-            above = target.itemAt(event.x, event.y);
+            above = target.itemAt(event.x - rtlSpacerAdjustment, event.y);
         } else {
-            above = target.childAt(event.x, event.y);
+            above = target.childAt(event.x - rtlSpacerAdjustment, event.y);
         }
 
         if (!above) {

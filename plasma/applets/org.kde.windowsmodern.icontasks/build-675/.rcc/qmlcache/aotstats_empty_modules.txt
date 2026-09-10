@@ -1,0 +1,1 @@
+plasma.applet.org.kde.plasma.icontasks(org.kde.plasma.icontasks)

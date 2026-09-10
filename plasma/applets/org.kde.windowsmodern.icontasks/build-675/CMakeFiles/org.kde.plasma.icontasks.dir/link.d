@@ -1,0 +1,313 @@
+lib/plasma/applets/org.kde.plasma.icontasks.so: \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/crti.o \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/16/crtbeginS.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/org.kde.plasma.icontasks_autogen/mocs_compilation.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/org.kde.plasma.icontasks_qmltyperegistrations.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.qt/rcc/qrc_qmake_plasma_applet_org_kde_plasma_icontasks.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.qt/rcc/qrc_org_kde_plasma_icontasks_raw_res_0.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/org.kde.plasma.icontasks.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/backend.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/floatingtooltiparea.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/floatingtooltipdialog.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/smartlauncherbackend.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/smartlauncheritem.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/kactivitymanagerd_plugins_settings.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/log_settings.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_qmlcache_loader.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_AudioStream_qml.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_ConfigAppearance_qml.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_ConfigBehavior_qml.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_config_qml.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_ContextMenu_qml.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_GroupDialog_qml.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_GroupExpanderOverlay_qml.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_main_qml.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_MouseHandler_qml.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_PipeWireThumbnail_qml.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_PlayerController_qml.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_PulseAudio_qml.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_ScrollableTextWrapper_qml.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_TaskBadgeOverlay_qml.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_TaskList_qml.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_TaskProgressOverlay_qml.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_Task_qml.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_ToolTipDelegate_qml.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_ToolTipInstance_qml.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_ToolTipWindowMouseArea_qml.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.qt/rcc/qrc_org_kde_plasma_icontasks_raw_qml_1.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_code_LayoutMetrics_js.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_code_TaskTools_js.cpp.o \
+  CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.qt/rcc/qrc_org_kde_plasma_icontasks_raw_qml_2.cpp.o \
+  /usr/lib/libPlasmaActivitiesStats.so.6.7.5 \
+  /usr/lib/libPlasmaQuick.so.6.7.5 \
+  /usr/lib/libprocesscore.so.6.7.5 \
+  /usr/lib/libnotificationmanager.so.6.7.5 \
+  /usr/lib/libKSysGuardFormatter.so.6.7.5 \
+  /usr/lib/libPlasma.so.6.7.5 \
+  /usr/lib/libPlasmaActivities.so.6.7.5 \
+  /usr/lib/libKirigamiPlatform.so.6.29.0 \
+  /usr/lib/libQt6Quick.so.6.11.2 \
+  /usr/lib/libQt6OpenGL.so.6.11.2 \
+  /usr/lib/libQt6Qml.so.6.11.2 \
+  /usr/lib/libKF6KIOFileWidgets.so.6.29.0 \
+  /usr/lib/libKF6KIOWidgets.so.6.29.0 \
+  /usr/lib/libKF6KIOGui.so.6.29.0 \
+  /usr/lib/libKF6KIOCore.so.6.29.0 \
+  /usr/lib/libQt6Network.so.6.11.2 \
+  /usr/lib/libKF6JobWidgets.so.6.29.0 \
+  /usr/lib/libKF6Completion.so.6.29.0 \
+  /usr/lib/libKF6ItemViews.so.6.29.0 \
+  /usr/lib/libKF6Solid.so.6.29.0 \
+  /usr/lib/libKF6I18n.so.6.29.0 \
+  /usr/lib/libKF6ConfigGui.so.6.29.0 \
+  /usr/lib/libKF6Bookmarks.so.6.29.0 \
+  /usr/lib/libKF6WidgetsAddons.so.6.29.0 \
+  /usr/lib/libQt6Widgets.so.6.11.2 \
+  /usr/lib/libKF6Notifications.so.6.29.0 \
+  /usr/lib/libKF6Service.so.6.29.0 \
+  /usr/lib/libKF6CoreAddons.so.6.29.0 \
+  /usr/lib/libQt6Xml.so.6.11.2 \
+  /usr/lib/libKF6WindowSystem.so.6.29.0 \
+  /usr/lib/libX11.so \
+  /usr/lib/libQt6Gui.so.6.11.2 \
+  /usr/lib/libGLX.so \
+  /usr/lib/libOpenGL.so \
+  /usr/lib/libKF6ConfigCore.so.6.29.0 \
+  /usr/lib/libQt6DBus.so.6.11.2 \
+  /usr/lib/libQt6Core.so.6.11.2 \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/16/libstdc++.so \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/libm.so \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/libm.so \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/libm.so \
+  /usr/lib/libm.so.6 \
+  /usr/lib/libmvec.so.1 \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/16/libgcc_s.so \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/16/libgcc_s.so \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/16/libgcc_s.so \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/libgcc_s.so.1 \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/16/libgcc.a \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/16/libatomic_asneeded.so \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/16/libatomic_asneeded.so \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/16/libatomic_asneeded.so \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/16/libatomic.so \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/libc.so \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/libc.so \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/libc.so \
+  /usr/lib/libc.so.6 \
+  /usr/lib/libc_nonshared.a \
+  /usr/lib/ld-linux-x86-64.so.2 \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/16/libgcc_s.so \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/16/libgcc_s.so \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/16/libgcc_s.so \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/libgcc_s.so.1 \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/16/libgcc.a \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/16/crtendS.o \
+  /usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/crtn.o
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/crti.o:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/16/crtbeginS.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/org.kde.plasma.icontasks_autogen/mocs_compilation.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/org.kde.plasma.icontasks_qmltyperegistrations.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.qt/rcc/qrc_qmake_plasma_applet_org_kde_plasma_icontasks.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.qt/rcc/qrc_org_kde_plasma_icontasks_raw_res_0.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/org.kde.plasma.icontasks.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/backend.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/floatingtooltiparea.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/floatingtooltipdialog.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/smartlauncherbackend.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/smartlauncheritem.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/kactivitymanagerd_plugins_settings.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/log_settings.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_qmlcache_loader.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_AudioStream_qml.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_ConfigAppearance_qml.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_ConfigBehavior_qml.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_config_qml.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_ContextMenu_qml.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_GroupDialog_qml.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_GroupExpanderOverlay_qml.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_main_qml.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_MouseHandler_qml.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_PipeWireThumbnail_qml.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_PlayerController_qml.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_PulseAudio_qml.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_ScrollableTextWrapper_qml.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_TaskBadgeOverlay_qml.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_TaskList_qml.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_TaskProgressOverlay_qml.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_Task_qml.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_ToolTipDelegate_qml.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_ToolTipInstance_qml.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_ToolTipWindowMouseArea_qml.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.qt/rcc/qrc_org_kde_plasma_icontasks_raw_qml_1.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_code_LayoutMetrics_js.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.rcc/qmlcache/org.kde.plasma.icontasks_contents_ui_code_TaskTools_js.cpp.o:
+
+CMakeFiles/org.kde.plasma.icontasks.dir/build-675/.qt/rcc/qrc_org_kde_plasma_icontasks_raw_qml_2.cpp.o:
+
+/usr/lib/libPlasmaActivitiesStats.so.6.7.5:
+
+/usr/lib/libPlasmaQuick.so.6.7.5:
+
+/usr/lib/libprocesscore.so.6.7.5:
+
+/usr/lib/libnotificationmanager.so.6.7.5:
+
+/usr/lib/libKSysGuardFormatter.so.6.7.5:
+
+/usr/lib/libPlasma.so.6.7.5:
+
+/usr/lib/libPlasmaActivities.so.6.7.5:
+
+/usr/lib/libKirigamiPlatform.so.6.29.0:
+
+/usr/lib/libQt6Quick.so.6.11.2:
+
+/usr/lib/libQt6OpenGL.so.6.11.2:
+
+/usr/lib/libQt6Qml.so.6.11.2:
+
+/usr/lib/libKF6KIOFileWidgets.so.6.29.0:
+
+/usr/lib/libKF6KIOWidgets.so.6.29.0:
+
+/usr/lib/libKF6KIOGui.so.6.29.0:
+
+/usr/lib/libKF6KIOCore.so.6.29.0:
+
+/usr/lib/libQt6Network.so.6.11.2:
+
+/usr/lib/libKF6JobWidgets.so.6.29.0:
+
+/usr/lib/libKF6Completion.so.6.29.0:
+
+/usr/lib/libKF6ItemViews.so.6.29.0:
+
+/usr/lib/libKF6Solid.so.6.29.0:
+
+/usr/lib/libKF6I18n.so.6.29.0:
+
+/usr/lib/libKF6ConfigGui.so.6.29.0:
+
+/usr/lib/libKF6Bookmarks.so.6.29.0:
+
+/usr/lib/libKF6WidgetsAddons.so.6.29.0:
+
+/usr/lib/libQt6Widgets.so.6.11.2:
+
+/usr/lib/libKF6Notifications.so.6.29.0:
+
+/usr/lib/libKF6Service.so.6.29.0:
+
+/usr/lib/libKF6CoreAddons.so.6.29.0:
+
+/usr/lib/libQt6Xml.so.6.11.2:
+
+/usr/lib/libKF6WindowSystem.so.6.29.0:
+
+/usr/lib/libX11.so:
+
+/usr/lib/libQt6Gui.so.6.11.2:
+
+/usr/lib/libGLX.so:
+
+/usr/lib/libOpenGL.so:
+
+/usr/lib/libKF6ConfigCore.so.6.29.0:
+
+/usr/lib/libQt6DBus.so.6.11.2:
+
+/usr/lib/libQt6Core.so.6.11.2:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/16/libstdc++.so:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/libm.so:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/libm.so:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/libm.so:
+
+/usr/lib/libm.so.6:
+
+/usr/lib/libmvec.so.1:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/16/libgcc_s.so:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/16/libgcc_s.so:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/16/libgcc_s.so:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/libgcc_s.so.1:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/16/libgcc.a:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/16/libatomic_asneeded.so:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/16/libatomic_asneeded.so:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/16/libatomic_asneeded.so:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/16/libatomic.so:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/libc.so:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/libc.so:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/libc.so:
+
+/usr/lib/libc.so.6:
+
+/usr/lib/libc_nonshared.a:
+
+/usr/lib/ld-linux-x86-64.so.2:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/16/libgcc_s.so:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/16/libgcc_s.so:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/16/libgcc_s.so:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/libgcc_s.so.1:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/16/libgcc.a:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/16/crtendS.o:
+
+/usr/lib/gcc/x86_64-pc-linux-gnu/16/../../../../lib/crtn.o:

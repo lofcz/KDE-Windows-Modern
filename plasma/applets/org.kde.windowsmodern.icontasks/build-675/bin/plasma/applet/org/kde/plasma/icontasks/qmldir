@@ -1,0 +1,25 @@
+module plasma.applet.org.kde.plasma.icontasks
+typeinfo org.kde.plasma.icontasks.qmltypes
+prefer :/qt/qml/plasma/applet/org/kde/plasma/icontasks/
+AudioStream 254.0 AudioStream.qml
+ConfigAppearance 254.0 ConfigAppearance.qml
+ConfigBehavior 254.0 ConfigBehavior.qml
+ContextMenu 254.0 ContextMenu.qml
+GroupDialog 254.0 GroupDialog.qml
+GroupExpanderOverlay 254.0 GroupExpanderOverlay.qml
+MouseHandler 254.0 MouseHandler.qml
+PipeWireThumbnail 254.0 PipeWireThumbnail.qml
+PlayerController 254.0 PlayerController.qml
+PulseAudio 254.0 PulseAudio.qml
+ScrollableTextWrapper 254.0 ScrollableTextWrapper.qml
+TaskBadgeOverlay 254.0 TaskBadgeOverlay.qml
+TaskList 254.0 TaskList.qml
+TaskProgressOverlay 254.0 TaskProgressOverlay.qml
+Task 254.0 Task.qml
+ToolTipDelegate 254.0 ToolTipDelegate.qml
+ToolTipInstance 254.0 ToolTipInstance.qml
+ToolTipWindowMouseArea 254.0 ToolTipWindowMouseArea.qml
+LayoutMetrics 254.0 code/LayoutMetrics.js
+TaskTools 254.0 code/TaskTools.js
+depends QtQuick
+

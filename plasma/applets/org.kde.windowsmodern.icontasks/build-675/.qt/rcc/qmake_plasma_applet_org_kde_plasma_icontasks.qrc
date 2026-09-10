@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/qt/qml/plasma/applet/org/kde/plasma/icontasks">
+    <file alias="qmldir">/home/lofcz/.local/src/KDE-Windows-Modern/plasma/applets/org.kde.windowsmodern.icontasks/build-675/bin/plasma/applet/org/kde/plasma/icontasks/qmldir</file>
+  </qresource>
+</RCC>
+

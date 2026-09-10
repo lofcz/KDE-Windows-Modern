@@ -1,0 +1,6 @@
+/home/lofcz/.local/src/KDE-Windows-Modern/plasma/applets/org.kde.windowsmodern.icontasks/build-675/org.kde.plasma.icontasks_autogen/include/../EWIEGA46WW/moc_floatingtooltiparea.cpp.json
+/home/lofcz/.local/src/KDE-Windows-Modern/plasma/applets/org.kde.windowsmodern.icontasks/build-675/org.kde.plasma.icontasks_autogen/include/../EWIEGA46WW/moc_floatingtooltipdialog.cpp.json
+/home/lofcz/.local/src/KDE-Windows-Modern/plasma/applets/org.kde.windowsmodern.icontasks/build-675/org.kde.plasma.icontasks_autogen/include/moc_backend.cpp.json
+/home/lofcz/.local/src/KDE-Windows-Modern/plasma/applets/org.kde.windowsmodern.icontasks/build-675/org.kde.plasma.icontasks_autogen/include/moc_smartlauncherbackend.cpp.json
+/home/lofcz/.local/src/KDE-Windows-Modern/plasma/applets/org.kde.windowsmodern.icontasks/build-675/org.kde.plasma.icontasks_autogen/include/moc_smartlauncheritem.cpp.json
+/home/lofcz/.local/src/KDE-Windows-Modern/plasma/applets/org.kde.windowsmodern.icontasks/build-675/org.kde.plasma.icontasks_autogen/include/org.kde.plasma.icontasks.moc.json

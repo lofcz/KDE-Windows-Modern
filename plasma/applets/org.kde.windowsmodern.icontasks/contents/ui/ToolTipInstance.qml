@@ -412,6 +412,7 @@ Item {
                     && !toolTipDelegate.isLauncher
                     && !albumArtImage.visible
                     && KWindowSystem.isPlatformWayland
+                    && thumbnailSourceItem.isReadyForPainting
                     && root.index !== -1
                 asynchronous: true
                 source: "PipeWireThumbnail.qml"

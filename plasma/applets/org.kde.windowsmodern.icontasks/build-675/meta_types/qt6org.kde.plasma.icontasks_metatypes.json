@@ -1,0 +1,1054 @@
+[
+    {
+        "classes": [
+            {
+                "classInfos": [
+                    {
+                        "name": "QML.Element",
+                        "value": "auto"
+                    }
+                ],
+                "className": "FloatingToolTipArea",
+                "lineNumber": 23,
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 0,
+                        "lineNumber": 28,
+                        "name": "mainItem",
+                        "notify": "mainItemChanged",
+                        "override": false,
+                        "read": "mainItem",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QQuickItem*",
+                        "user": false,
+                        "virtual": false,
+                        "write": "setMainItem"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 1,
+                        "lineNumber": 29,
+                        "name": "mainText",
+                        "notify": "mainTextChanged",
+                        "override": false,
+                        "read": "mainText",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "virtual": false,
+                        "write": "setMainText"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 2,
+                        "lineNumber": 30,
+                        "name": "subText",
+                        "notify": "subTextChanged",
+                        "override": false,
+                        "read": "subText",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QString",
+                        "user": false,
+                        "virtual": false,
+                        "write": "setSubText"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 3,
+                        "lineNumber": 31,
+                        "name": "textFormat",
+                        "notify": "textFormatChanged",
+                        "override": false,
+                        "read": "textFormat",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "virtual": false,
+                        "write": "setTextFormat"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 4,
+                        "lineNumber": 32,
+                        "name": "icon",
+                        "notify": "iconChanged",
+                        "override": false,
+                        "read": "icon",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "virtual": false,
+                        "write": "setIcon"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 5,
+                        "lineNumber": 33,
+                        "name": "containsMouse",
+                        "notify": "containsMouseChanged",
+                        "override": false,
+                        "read": "containsMouse",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "virtual": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 6,
+                        "lineNumber": 34,
+                        "name": "location",
+                        "notify": "locationChanged",
+                        "override": false,
+                        "read": "location",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "Plasma::Types::Location",
+                        "user": false,
+                        "virtual": false,
+                        "write": "setLocation"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 7,
+                        "lineNumber": 35,
+                        "name": "image",
+                        "notify": "imageChanged",
+                        "override": false,
+                        "read": "image",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QVariant",
+                        "user": false,
+                        "virtual": false,
+                        "write": "setImage"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 8,
+                        "lineNumber": 36,
+                        "member": "m_active",
+                        "name": "active",
+                        "notify": "activeChanged",
+                        "override": false,
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "virtual": false,
+                        "write": "setActive"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 9,
+                        "lineNumber": 37,
+                        "member": "m_interactive",
+                        "name": "interactive",
+                        "notify": "interactiveChanged",
+                        "override": false,
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "virtual": false,
+                        "write": "setInteractive"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 10,
+                        "lineNumber": 38,
+                        "member": "m_timeout",
+                        "name": "timeout",
+                        "override": false,
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "virtual": false,
+                        "write": "setTimeout"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 11,
+                        "lineNumber": 40,
+                        "name": "margin",
+                        "notify": "marginChanged",
+                        "override": false,
+                        "read": "margin",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "virtual": false,
+                        "write": "setMargin"
+                    }
+                ],
+                "qualifiedClassName": "FloatingToolTipArea",
+                "signals": [
+                    {
+                        "access": "public",
+                        "index": 0,
+                        "lineNumber": 90,
+                        "name": "mainItemChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 1,
+                        "lineNumber": 91,
+                        "name": "mainTextChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 2,
+                        "lineNumber": 92,
+                        "name": "subTextChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 3,
+                        "lineNumber": 93,
+                        "name": "textFormatChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 4,
+                        "lineNumber": 94,
+                        "name": "iconChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 5,
+                        "lineNumber": 95,
+                        "name": "imageChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 6,
+                        "lineNumber": 96,
+                        "name": "containsMouseChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 7,
+                        "lineNumber": 97,
+                        "name": "locationChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 8,
+                        "lineNumber": 98,
+                        "name": "activeChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 9,
+                        "lineNumber": 99,
+                        "name": "interactiveChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 10,
+                        "lineNumber": 100,
+                        "name": "marginChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 11,
+                        "lineNumber": 101,
+                        "name": "aboutToShow",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "toolTipVisible",
+                                "type": "bool"
+                            }
+                        ],
+                        "index": 12,
+                        "lineNumber": 102,
+                        "name": "toolTipVisibleChanged",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "public",
+                        "index": 13,
+                        "lineNumber": 78,
+                        "name": "showToolTip",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 14,
+                        "lineNumber": 79,
+                        "name": "hideToolTip",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 15,
+                        "lineNumber": 80,
+                        "name": "hideImmediately",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "private",
+                        "arguments": [
+                            {
+                                "name": "group",
+                                "type": "KConfigGroup"
+                            },
+                            {
+                                "name": "names",
+                                "type": "QByteArrayList"
+                            }
+                        ],
+                        "index": 16,
+                        "lineNumber": 105,
+                        "name": "settingsChanged",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QQuickItem"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "floatingtooltiparea.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "FloatingToolTipDialog",
+                "lineNumber": 22,
+                "object": true,
+                "qualifiedClassName": "FloatingToolTipDialog",
+                "slots": [
+                    {
+                        "access": "private",
+                        "arguments": [
+                            {
+                                "name": "value",
+                                "type": "QVariant"
+                            }
+                        ],
+                        "index": 0,
+                        "lineNumber": 51,
+                        "name": "valueChanged",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "PlasmaQuick::PopupPlasmaWindow"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "floatingtooltipdialog.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "classInfos": [
+                    {
+                        "name": "QML.Element",
+                        "value": "auto"
+                    }
+                ],
+                "className": "Backend",
+                "enums": [
+                    {
+                        "isClass": false,
+                        "isFlag": false,
+                        "lineNumber": 37,
+                        "name": "MiddleClickAction",
+                        "values": [
+                            "None",
+                            "Close",
+                            "NewInstance",
+                            "ToggleMinimized",
+                            "ToggleGrouping",
+                            "BringToCurrentDesktop"
+                        ]
+                    }
+                ],
+                "lineNumber": 31,
+                "methods": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "launcherUrl",
+                                "type": "QUrl"
+                            },
+                            {
+                                "name": "parent",
+                                "type": "QObject*"
+                            }
+                        ],
+                        "index": 6,
+                        "lineNumber": 51,
+                        "name": "jumpListActions",
+                        "returnType": "QVariantList"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "launcherUrl",
+                                "type": "QUrl"
+                            },
+                            {
+                                "name": "showAllPlaces",
+                                "type": "bool"
+                            },
+                            {
+                                "name": "parent",
+                                "type": "QObject*"
+                            }
+                        ],
+                        "index": 7,
+                        "lineNumber": 52,
+                        "name": "placesActions",
+                        "returnType": "QVariantList"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "launcherUrl",
+                                "type": "QUrl"
+                            },
+                            {
+                                "name": "parent",
+                                "type": "QObject*"
+                            }
+                        ],
+                        "index": 8,
+                        "lineNumber": 53,
+                        "name": "recentDocumentActions",
+                        "returnType": "QVariantList"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "action",
+                                "type": "QAction*"
+                            }
+                        ],
+                        "index": 9,
+                        "isConst": true,
+                        "lineNumber": 54,
+                        "name": "setActionGroup",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "item",
+                                "type": "QQuickItem*"
+                            }
+                        ],
+                        "index": 10,
+                        "isConst": true,
+                        "lineNumber": 56,
+                        "name": "globalRect",
+                        "returnType": "QRect"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "url",
+                                "type": "QUrl"
+                            }
+                        ],
+                        "index": 11,
+                        "isConst": true,
+                        "lineNumber": 58,
+                        "name": "isApplication",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "pid",
+                                "type": "qint64"
+                            }
+                        ],
+                        "index": 12,
+                        "isConst": true,
+                        "lineNumber": 60,
+                        "name": "parentPid",
+                        "returnType": "qint64"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "launcherUrl",
+                                "type": "QUrl"
+                            }
+                        ],
+                        "index": 13,
+                        "lineNumber": 62,
+                        "name": "tryDecodeApplicationsUrl",
+                        "returnType": "QUrl"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "launcherUrl",
+                                "type": "QUrl"
+                            }
+                        ],
+                        "index": 14,
+                        "lineNumber": 63,
+                        "name": "applicationCategories",
+                        "returnType": "QStringList"
+                    }
+                ],
+                "object": true,
+                "qualifiedClassName": "Backend",
+                "signals": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "url",
+                                "type": "QUrl"
+                            }
+                        ],
+                        "index": 0,
+                        "isConst": true,
+                        "lineNumber": 66,
+                        "name": "addLauncher",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 1,
+                        "lineNumber": 68,
+                        "name": "showAllPlaces",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 2,
+                        "lineNumber": 69,
+                        "name": "aboutToSleep",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 3,
+                        "lineNumber": 70,
+                        "name": "resumedFromSleep",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "private",
+                        "index": 4,
+                        "isConst": true,
+                        "lineNumber": 73,
+                        "name": "handleRecentDocumentAction",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "private",
+                        "arguments": [
+                            {
+                                "name": "sleeping",
+                                "type": "bool"
+                            }
+                        ],
+                        "index": 5,
+                        "lineNumber": 74,
+                        "name": "onPrepareForSleep",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "backend.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "Backend",
+                "lineNumber": 34,
+                "object": true,
+                "qualifiedClassName": "SmartLauncher::Backend",
+                "signals": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "uri",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "count",
+                                "type": "int"
+                            }
+                        ],
+                        "index": 0,
+                        "lineNumber": 53,
+                        "name": "countChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "uri",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "countVisible",
+                                "type": "bool"
+                            }
+                        ],
+                        "index": 1,
+                        "lineNumber": 54,
+                        "name": "countVisibleChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "uri",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "progress",
+                                "type": "int"
+                            }
+                        ],
+                        "index": 2,
+                        "lineNumber": 55,
+                        "name": "progressChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "uri",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "progressVisible",
+                                "type": "bool"
+                            }
+                        ],
+                        "index": 3,
+                        "lineNumber": 56,
+                        "name": "progressVisibleChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "uri",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "urgent",
+                                "type": "bool"
+                            }
+                        ],
+                        "index": 4,
+                        "lineNumber": 57,
+                        "name": "urgentChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "uri",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 5,
+                        "lineNumber": 59,
+                        "name": "reloadRequested",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "uri",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 6,
+                        "lineNumber": 60,
+                        "name": "launcherRemoved",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "private",
+                        "arguments": [
+                            {
+                                "name": "uri",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "properties",
+                                "type": "QMap<QString,QVariant>"
+                            }
+                        ],
+                        "index": 7,
+                        "lineNumber": 63,
+                        "name": "update",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    },
+                    {
+                        "access": "protected",
+                        "name": "QDBusContext"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "smartlauncherbackend.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "classInfos": [
+                    {
+                        "name": "QML.Element",
+                        "value": "SmartLauncherItem"
+                    }
+                ],
+                "className": "Item",
+                "lineNumber": 19,
+                "object": true,
+                "properties": [
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 0,
+                        "lineNumber": 24,
+                        "name": "launcherUrl",
+                        "notify": "launcherUrlChanged",
+                        "override": false,
+                        "read": "launcherUrl",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "QUrl",
+                        "user": false,
+                        "virtual": false,
+                        "write": "setLauncherUrl"
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 1,
+                        "lineNumber": 26,
+                        "name": "count",
+                        "notify": "countChanged",
+                        "override": false,
+                        "read": "count",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "virtual": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 2,
+                        "lineNumber": 27,
+                        "name": "countVisible",
+                        "notify": "countVisibleChanged",
+                        "override": false,
+                        "read": "countVisible",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "virtual": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 3,
+                        "lineNumber": 28,
+                        "name": "progress",
+                        "notify": "progressChanged",
+                        "override": false,
+                        "read": "progress",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "int",
+                        "user": false,
+                        "virtual": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 4,
+                        "lineNumber": 29,
+                        "name": "progressVisible",
+                        "notify": "progressVisibleChanged",
+                        "override": false,
+                        "read": "progressVisible",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "virtual": false
+                    },
+                    {
+                        "constant": false,
+                        "designable": true,
+                        "final": false,
+                        "index": 5,
+                        "lineNumber": 30,
+                        "name": "urgent",
+                        "notify": "urgentChanged",
+                        "override": false,
+                        "read": "urgent",
+                        "required": false,
+                        "scriptable": true,
+                        "stored": true,
+                        "type": "bool",
+                        "user": false,
+                        "virtual": false
+                    }
+                ],
+                "qualifiedClassName": "SmartLauncher::Item",
+                "signals": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "launcherUrl",
+                                "type": "QUrl"
+                            }
+                        ],
+                        "index": 0,
+                        "lineNumber": 46,
+                        "name": "launcherUrlChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "count",
+                                "type": "int"
+                            }
+                        ],
+                        "index": 1,
+                        "lineNumber": 48,
+                        "name": "countChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "countVisible",
+                                "type": "bool"
+                            }
+                        ],
+                        "index": 2,
+                        "lineNumber": 49,
+                        "name": "countVisibleChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "progress",
+                                "type": "int"
+                            }
+                        ],
+                        "index": 3,
+                        "lineNumber": 50,
+                        "name": "progressChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "progressVisible",
+                                "type": "bool"
+                            }
+                        ],
+                        "index": 4,
+                        "lineNumber": 51,
+                        "name": "progressVisibleChanged",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "urgent",
+                                "type": "bool"
+                            }
+                        ],
+                        "index": 5,
+                        "lineNumber": 52,
+                        "name": "urgentChanged",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "smartlauncheritem.h",
+        "outputRevision": 69
+    },
+    {
+        "classes": [
+            {
+                "className": "org_kde_plasma_icontasks_Plugin",
+                "lineNumber": 5,
+                "object": true,
+                "qualifiedClassName": "org_kde_plasma_icontasks_Plugin",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "Plasma::Applet"
+                    }
+                ]
+            },
+            {
+                "className": "org_kde_plasma_icontasks_PluginFactory",
+                "interfaces": [
+                    [
+                        {
+                            "className": "KPluginFactory",
+                            "id": "\"org.kde.KPluginFactory\""
+                        }
+                    ]
+                ],
+                "lineNumber": 12,
+                "object": true,
+                "qualifiedClassName": "org_kde_plasma_icontasks_PluginFactory",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "KPluginFactory"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "org.kde.plasma.icontasks.cpp",
+        "outputRevision": 69
+    }
+]

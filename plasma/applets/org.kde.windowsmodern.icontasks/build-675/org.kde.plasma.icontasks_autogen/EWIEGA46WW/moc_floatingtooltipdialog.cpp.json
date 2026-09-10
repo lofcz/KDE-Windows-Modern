@@ -1,0 +1,33 @@
+{
+    "classes": [
+        {
+            "className": "FloatingToolTipDialog",
+            "lineNumber": 22,
+            "object": true,
+            "qualifiedClassName": "FloatingToolTipDialog",
+            "slots": [
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "value",
+                            "type": "QVariant"
+                        }
+                    ],
+                    "index": 0,
+                    "lineNumber": 51,
+                    "name": "valueChanged",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "PlasmaQuick::PopupPlasmaWindow"
+                }
+            ]
+        }
+    ],
+    "inputFile": "floatingtooltipdialog.h",
+    "outputRevision": 69
+}

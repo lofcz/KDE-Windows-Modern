@@ -1,0 +1,379 @@
+{
+    "classes": [
+        {
+            "classInfos": [
+                {
+                    "name": "QML.Element",
+                    "value": "auto"
+                }
+            ],
+            "className": "FloatingToolTipArea",
+            "lineNumber": 23,
+            "object": true,
+            "properties": [
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 0,
+                    "lineNumber": 28,
+                    "name": "mainItem",
+                    "notify": "mainItemChanged",
+                    "override": false,
+                    "read": "mainItem",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QQuickItem*",
+                    "user": false,
+                    "virtual": false,
+                    "write": "setMainItem"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 1,
+                    "lineNumber": 29,
+                    "name": "mainText",
+                    "notify": "mainTextChanged",
+                    "override": false,
+                    "read": "mainText",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "virtual": false,
+                    "write": "setMainText"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 2,
+                    "lineNumber": 30,
+                    "name": "subText",
+                    "notify": "subTextChanged",
+                    "override": false,
+                    "read": "subText",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "virtual": false,
+                    "write": "setSubText"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 3,
+                    "lineNumber": 31,
+                    "name": "textFormat",
+                    "notify": "textFormatChanged",
+                    "override": false,
+                    "read": "textFormat",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "int",
+                    "user": false,
+                    "virtual": false,
+                    "write": "setTextFormat"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 4,
+                    "lineNumber": 32,
+                    "name": "icon",
+                    "notify": "iconChanged",
+                    "override": false,
+                    "read": "icon",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QVariant",
+                    "user": false,
+                    "virtual": false,
+                    "write": "setIcon"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 5,
+                    "lineNumber": 33,
+                    "name": "containsMouse",
+                    "notify": "containsMouseChanged",
+                    "override": false,
+                    "read": "containsMouse",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "bool",
+                    "user": false,
+                    "virtual": false
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 6,
+                    "lineNumber": 34,
+                    "name": "location",
+                    "notify": "locationChanged",
+                    "override": false,
+                    "read": "location",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "Plasma::Types::Location",
+                    "user": false,
+                    "virtual": false,
+                    "write": "setLocation"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 7,
+                    "lineNumber": 35,
+                    "name": "image",
+                    "notify": "imageChanged",
+                    "override": false,
+                    "read": "image",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QVariant",
+                    "user": false,
+                    "virtual": false,
+                    "write": "setImage"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 8,
+                    "lineNumber": 36,
+                    "member": "m_active",
+                    "name": "active",
+                    "notify": "activeChanged",
+                    "override": false,
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "bool",
+                    "user": false,
+                    "virtual": false,
+                    "write": "setActive"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 9,
+                    "lineNumber": 37,
+                    "member": "m_interactive",
+                    "name": "interactive",
+                    "notify": "interactiveChanged",
+                    "override": false,
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "bool",
+                    "user": false,
+                    "virtual": false,
+                    "write": "setInteractive"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 10,
+                    "lineNumber": 38,
+                    "member": "m_timeout",
+                    "name": "timeout",
+                    "override": false,
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "int",
+                    "user": false,
+                    "virtual": false,
+                    "write": "setTimeout"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 11,
+                    "lineNumber": 40,
+                    "name": "margin",
+                    "notify": "marginChanged",
+                    "override": false,
+                    "read": "margin",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "int",
+                    "user": false,
+                    "virtual": false,
+                    "write": "setMargin"
+                }
+            ],
+            "qualifiedClassName": "FloatingToolTipArea",
+            "signals": [
+                {
+                    "access": "public",
+                    "index": 0,
+                    "lineNumber": 90,
+                    "name": "mainItemChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "index": 1,
+                    "lineNumber": 91,
+                    "name": "mainTextChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "index": 2,
+                    "lineNumber": 92,
+                    "name": "subTextChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "index": 3,
+                    "lineNumber": 93,
+                    "name": "textFormatChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "index": 4,
+                    "lineNumber": 94,
+                    "name": "iconChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "index": 5,
+                    "lineNumber": 95,
+                    "name": "imageChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "index": 6,
+                    "lineNumber": 96,
+                    "name": "containsMouseChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "index": 7,
+                    "lineNumber": 97,
+                    "name": "locationChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "index": 8,
+                    "lineNumber": 98,
+                    "name": "activeChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "index": 9,
+                    "lineNumber": 99,
+                    "name": "interactiveChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "index": 10,
+                    "lineNumber": 100,
+                    "name": "marginChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "index": 11,
+                    "lineNumber": 101,
+                    "name": "aboutToShow",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "toolTipVisible",
+                            "type": "bool"
+                        }
+                    ],
+                    "index": 12,
+                    "lineNumber": 102,
+                    "name": "toolTipVisibleChanged",
+                    "returnType": "void"
+                }
+            ],
+            "slots": [
+                {
+                    "access": "public",
+                    "index": 13,
+                    "lineNumber": 78,
+                    "name": "showToolTip",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "index": 14,
+                    "lineNumber": 79,
+                    "name": "hideToolTip",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "index": 15,
+                    "lineNumber": 80,
+                    "name": "hideImmediately",
+                    "returnType": "void"
+                },
+                {
+                    "access": "private",
+                    "arguments": [
+                        {
+                            "name": "group",
+                            "type": "KConfigGroup"
+                        },
+                        {
+                            "name": "names",
+                            "type": "QByteArrayList"
+                        }
+                    ],
+                    "index": 16,
+                    "lineNumber": 105,
+                    "name": "settingsChanged",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QQuickItem"
+                }
+            ]
+        }
+    ],
+    "inputFile": "floatingtooltiparea.h",
+    "outputRevision": 69
+}

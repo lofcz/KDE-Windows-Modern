@@ -1,0 +1,25 @@
+<RCC>
+  <qresource prefix="/qt/qml/plasma/applet/org/kde/plasma/icontasks/">
+    <file alias="AudioStream.qml">/home/lofcz/.local/src/KDE-Windows-Modern/plasma/applets/org.kde.windowsmodern.icontasks/contents/ui/AudioStream.qml</file>
+    <file alias="ConfigAppearance.qml">/home/lofcz/.local/src/KDE-Windows-Modern/plasma/applets/org.kde.windowsmodern.icontasks/contents/ui/ConfigAppearance.qml</file>
+    <file alias="ConfigBehavior.qml">/home/lofcz/.local/src/KDE-Windows-Modern/plasma/applets/org.kde.windowsmodern.icontasks/contents/ui/ConfigBehavior.qml</file>
+    <file alias="config.qml">/home/lofcz/.local/src/KDE-Windows-Modern/plasma/applets/org.kde.windowsmodern.icontasks/contents/ui/config.qml</file>
+    <file alias="ContextMenu.qml">/home/lofcz/.local/src/KDE-Windows-Modern/plasma/applets/org.kde.windowsmodern.icontasks/contents/ui/ContextMenu.qml</file>
+    <file alias="GroupDialog.qml">/home/lofcz/.local/src/KDE-Windows-Modern/plasma/applets/org.kde.windowsmodern.icontasks/contents/ui/GroupDialog.qml</file>
+    <file alias="GroupExpanderOverlay.qml">/home/lofcz/.local/src/KDE-Windows-Modern/plasma/applets/org.kde.windowsmodern.icontasks/contents/ui/GroupExpanderOverlay.qml</file>
+    <file alias="main.qml">/home/lofcz/.local/src/KDE-Windows-Modern/plasma/applets/org.kde.windowsmodern.icontasks/contents/ui/main.qml</file>
+    <file alias="MouseHandler.qml">/home/lofcz/.local/src/KDE-Windows-Modern/plasma/applets/org.kde.windowsmodern.icontasks/contents/ui/MouseHandler.qml</file>
+    <file alias="PipeWireThumbnail.qml">/home/lofcz/.local/src/KDE-Windows-Modern/plasma/applets/org.kde.windowsmodern.icontasks/contents/ui/PipeWireThumbnail.qml</file>
+    <file alias="PlayerController.qml">/home/lofcz/.local/src/KDE-Windows-Modern/plasma/applets/org.kde.windowsmodern.icontasks/contents/ui/PlayerController.qml</file>
+    <file alias="PulseAudio.qml">/home/lofcz/.local/src/KDE-Windows-Modern/plasma/applets/org.kde.windowsmodern.icontasks/contents/ui/PulseAudio.qml</file>
+    <file alias="ScrollableTextWrapper.qml">/home/lofcz/.local/src/KDE-Windows-Modern/plasma/applets/org.kde.windowsmodern.icontasks/contents/ui/ScrollableTextWrapper.qml</file>
+    <file alias="TaskBadgeOverlay.qml">/home/lofcz/.local/src/KDE-Windows-Modern/plasma/applets/org.kde.windowsmodern.icontasks/contents/ui/TaskBadgeOverlay.qml</file>
+    <file alias="TaskList.qml">/home/lofcz/.local/src/KDE-Windows-Modern/plasma/applets/org.kde.windowsmodern.icontasks/contents/ui/TaskList.qml</file>
+    <file alias="TaskProgressOverlay.qml">/home/lofcz/.local/src/KDE-Windows-Modern/plasma/applets/org.kde.windowsmodern.icontasks/contents/ui/TaskProgressOverlay.qml</file>
+    <file alias="Task.qml">/home/lofcz/.local/src/KDE-Windows-Modern/plasma/applets/org.kde.windowsmodern.icontasks/contents/ui/Task.qml</file>
+    <file alias="ToolTipDelegate.qml">/home/lofcz/.local/src/KDE-Windows-Modern/plasma/applets/org.kde.windowsmodern.icontasks/contents/ui/ToolTipDelegate.qml</file>
+    <file alias="ToolTipInstance.qml">/home/lofcz/.local/src/KDE-Windows-Modern/plasma/applets/org.kde.windowsmodern.icontasks/contents/ui/ToolTipInstance.qml</file>
+    <file alias="ToolTipWindowMouseArea.qml">/home/lofcz/.local/src/KDE-Windows-Modern/plasma/applets/org.kde.windowsmodern.icontasks/contents/ui/ToolTipWindowMouseArea.qml</file>
+  </qresource>
+</RCC>
+

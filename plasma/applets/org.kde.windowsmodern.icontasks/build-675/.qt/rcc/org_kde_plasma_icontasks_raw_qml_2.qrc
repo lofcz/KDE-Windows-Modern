@@ -1,0 +1,7 @@
+<RCC>
+  <qresource prefix="/qt/qml/plasma/applet/org/kde/plasma/icontasks/">
+    <file alias="code/LayoutMetrics.js">/home/lofcz/.local/src/KDE-Windows-Modern/plasma/applets/org.kde.windowsmodern.icontasks/contents/ui/code/LayoutMetrics.js</file>
+    <file alias="code/TaskTools.js">/home/lofcz/.local/src/KDE-Windows-Modern/plasma/applets/org.kde.windowsmodern.icontasks/contents/ui/code/TaskTools.js</file>
+  </qresource>
+</RCC>
+

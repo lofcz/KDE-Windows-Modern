@@ -1,0 +1,38 @@
+{
+    "classes": [
+        {
+            "className": "org_kde_plasma_icontasks_Plugin",
+            "lineNumber": 5,
+            "object": true,
+            "qualifiedClassName": "org_kde_plasma_icontasks_Plugin",
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "Plasma::Applet"
+                }
+            ]
+        },
+        {
+            "className": "org_kde_plasma_icontasks_PluginFactory",
+            "interfaces": [
+                [
+                    {
+                        "className": "KPluginFactory",
+                        "id": "\"org.kde.KPluginFactory\""
+                    }
+                ]
+            ],
+            "lineNumber": 12,
+            "object": true,
+            "qualifiedClassName": "org_kde_plasma_icontasks_PluginFactory",
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "KPluginFactory"
+                }
+            ]
+        }
+    ],
+    "inputFile": "org.kde.plasma.icontasks.cpp",
+    "outputRevision": 69
+}
