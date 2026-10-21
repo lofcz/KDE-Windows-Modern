@@ -1,119 +1,29 @@
 #!/usr/bin/env bash
-# ───────────────────────────────────────────────────────────────────
-#  install-greeter-live.sh — Install PATCHED PLM as your boot greeter
-#
-#  Replaces the system plasma-login-greeter with our patched build and
-#  installs the theme + wallpaper system-wide.
-#
-#  WARNING: If the patched binary crashes, you may not be able to log in.
-#  Keep a TTY open (Ctrl+Alt+F3) before proceeding.
-#
-#  Revert (fast):   sudo cp /usr/libexec/plasma-login-greeter.orig \
-#                       /usr/libexec/plasma-login-greeter && \
-#                   sudo reboot
-#  Revert (full):   sudo bash scripts/uninstall-greeter-system.sh && sudo reboot
-# ───────────────────────────────────────────────────────────────────
-set -e
-
-SRC_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-PLM_BUILD="${SRC_DIR}/third_party/plasma-login-manager/build-user"
-PLM_BINARY="/usr/libexec/plasma-login-greeter"
-SYSTEM_LOOKFEEL="/usr/share/plasma/look-and-feel/org.kde.windowsmodern.dark"
-USER_LOOKFEEL="${SRC_DIR}/plasma/look-and-feel/org.kde.windowsmodern.dark"
-SYSTEM_WALLPAPER="/usr/share/wallpapers/Windows-modern"
-
-echo ""
-echo "╔══════════════════════════════════════════════════════════════════╗"
-echo "║   Patched PLM Boot Greeter — LIVE System Install                 ║"
-echo "║                                                                  ║"
-echo "║   ⚠  This REPLACES your system login manager.                   ║"
-echo "║                                                                  ║"
-echo "║   • /usr/libexec/plasma-login-greeter will be overwritten       ║"
-echo "║   • If the patched binary crashes, you may be LOCKED OUT         ║"
-echo "║   • Keep another terminal / TTY open (Ctrl+Alt+F3)             ║"
-echo "║   • Revert command is shown at the end of this script           ║"
-echo "╚══════════════════════════════════════════════════════════════════╝"
-echo ""
-
-# ── Step 1: Build patched PLM (fresh build every time) ──
-echo "Step 1 / 4: Building patched PLM..."
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-bash "${SRC_DIR}/scripts/install-greeter.sh"
-echo ""
-
-# ── Require root for system install ──
+# Install a previously built greeter atomically; never stop the display manager.
+set -euo pipefail
+SRC_DIR="$(cd "$(dirname "$0")/.." && pwd -P)"
+BUILD_DIR="${WM_GREETER_BUILD_DIR:-$SRC_DIR/third_party/plasma-login-manager/build-user}"
+BUILT="$BUILD_DIR/bin/plasma-login-greeter"
+TARGET=/usr/libexec/plasma-login-greeter
+if [ -f /usr/lib/plasma-login-greeter ]; then TARGET=/usr/lib/plasma-login-greeter; fi
+[ -x "$BUILT" ] || { echo "Build the greeter first: $SRC_DIR/scripts/install-greeter.sh" >&2; exit 1; }
 if [ "$EUID" -ne 0 ]; then
-    echo "ERROR: System install requires root."
-    echo "       Run the complete script with sudo:"
-    echo ""
-    echo "       sudo bash scripts/install-greeter-live.sh"
-    echo ""
+    exec sudo env WM_GREETER_BUILD_DIR="$BUILD_DIR" bash "$0" "$@"
+fi
+
+# Refuse an unresolved binary before changing the next-login executable.
+dependencies="$(ldd -r "$BUILT" 2>&1)" || { echo 'Cannot inspect greeter dependencies.' >&2; exit 1; }
+if [[ "$dependencies" == *'not found'* || "$dependencies" == *'undefined symbol'* ]]; then
+    echo 'The built greeter has unresolved dependencies; installation aborted.' >&2
     exit 1
 fi
-
-# ── Typed confirmation ──
-read -r -p "Type YES to proceed with system install: " CONFIRM
-echo ""
-if [ "$CONFIRM" != "YES" ]; then
-    echo "Aborted. No system files were changed."
-    echo "To test without installing:"
-    echo "  ${PLM_BUILD}/bin/plasma-login-greeter --test"
-    exit 1
-fi
-
-# ── Step 2: Backup pristine binary (once) ──
-if [ -f "$PLM_BINARY" ] && [ ! -f "${PLM_BINARY}.orig" ]; then
-    echo "Step 2 / 4: Saving pristine backup → ${PLM_BINARY}.orig"
-    cp "$PLM_BINARY" "${PLM_BINARY}.orig"
-else
-    echo "Step 2 / 4: Pristine backup already exists."
-fi
-
-# ── Step 3: Stop plasmalogin so we can overwrite the running binary ──
-# We do NOT restart the service here: starting plasmalogin while a user is
-# already logged into a graphical session spawns a greeter overlay on top of
-# the running desktop. The new binary will be used automatically on reboot.
-if systemctl is-active --quiet plasmalogin.service; then
-    echo "Step 3 / 4: Stopping plasmalogin.service..."
-    systemctl stop plasmalogin.service
-    echo "           Service stopped."
-fi
-
-# ── Step 4: Install patched binary, theme, and wallpaper system-wide ──
-echo "Step 4 / 4: Installing patched binary..."
-cp "${PLM_BUILD}/bin/plasma-login-greeter" "$PLM_BINARY"
-chmod 755 "$PLM_BINARY"
-
-echo "           Installing theme to ${SYSTEM_LOOKFEEL}..."
-rm -rf "${SYSTEM_LOOKFEEL}/contents/lockscreen"
-mkdir -p "${SYSTEM_LOOKFEEL}/contents"
-cp -r "${USER_LOOKFEEL}/contents/lockscreen" "${SYSTEM_LOOKFEEL}/contents/"
-
-echo "           Ensuring greeter wallpaper is installed system-wide..."
-if [ ! -d "${SYSTEM_WALLPAPER}" ]; then
-    cp -r "${SRC_DIR}/wallpaper/Windows-modern" "${SYSTEM_WALLPAPER}"
-    echo "           Wallpaper installed to ${SYSTEM_WALLPAPER}"
-else
-    echo "           Wallpaper already present at ${SYSTEM_WALLPAPER}"
-fi
-
-echo ""
-echo "╔══════════════════════════════════════════════════════════════════╗"
-echo "║                     INSTALL COMPLETE                            ║"
-echo "╚══════════════════════════════════════════════════════════════════╝"
-echo ""
-echo "The patched greeter binary is installed. It will be used on the next boot."
-echo ""
-echo "DO NOT run 'sudo systemctl start plasmalogin' while logged in — that will"
-echo "spawn a greeter overlay on top of your current session."
-echo ""
-echo "Reboot now to see the new greeter:"
-echo "  sudo reboot"
-echo ""
-echo "Quick revert (no package manager needed):"
-echo "  sudo cp ${PLM_BINARY}.orig ${PLM_BINARY}"
-echo "  sudo reboot"
-echo ""
-echo "Full revert (restores distro package):"
-echo "  sudo bash scripts/uninstall-greeter-system.sh && sudo reboot"
-echo ""
+BACKUP="${TARGET}.orig-$(date -u +%Y%m%dT%H%M%SZ)"
+cp -a "$TARGET" "$BACKUP"
+SYSTEM_THEME=/usr/share/plasma/look-and-feel/org.kde.windowsmodern.dark
+mkdir -p "$SYSTEM_THEME/contents/lockscreen" /usr/share/wallpapers/Windows-modern
+rsync -a --delete "$SRC_DIR/plasma/look-and-feel/org.kde.windowsmodern.dark/contents/lockscreen/" "$SYSTEM_THEME/contents/lockscreen/"
+rsync -a "$SRC_DIR/wallpaper/Windows-modern/" /usr/share/wallpapers/Windows-modern/
+install -m 755 "$BUILT" "${TARGET}.windows-modern-new"
+mv -Tf "${TARGET}.windows-modern-new" "$TARGET"
+printf 'Installed for the next login. Backup: %s\n' "$BACKUP"
+echo 'The login manager and current session remain running.'

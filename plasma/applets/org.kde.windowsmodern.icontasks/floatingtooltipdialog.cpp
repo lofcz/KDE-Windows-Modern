@@ -8,14 +8,22 @@
 #include <QDebug>
 #include <QFile>
 #include <QPlatformSurfaceEvent>
+#include <QQmlComponent>
 #include <QQmlEngine>
 #include <QQuickItem>
 
 #include <KWindowSystem>
+#if PLASMA_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+#include <PlasmaQuick/PlasmaQuick>
+#else
 #include <PlasmaQuick/SharedQmlEngine>
+#endif
 
 FloatingToolTipDialog::FloatingToolTipDialog()
     : PopupPlasmaWindow(QStringLiteral("widgets/tooltip"))
+#if PLASMA_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+    , m_engine(PlasmaQuick::globalEngine())
+#endif
     , m_qmlObject(nullptr)
     , m_hideTimeout(-1)
     , m_interactive(false)
@@ -73,6 +81,13 @@ void FloatingToolTipDialog::updateSize()
 
 QQuickItem *FloatingToolTipDialog::loadDefaultItem()
 {
+#if PLASMA_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+    if (!m_qmlObject) {
+        QQmlComponent component(m_engine.get(), "org.kde.plasma.core", "DefaultToolTip");
+        m_qmlObject = std::unique_ptr<QQuickItem>(qobject_cast<QQuickItem *>(component.create()));
+    }
+    return m_qmlObject.get();
+#else
     if (!m_qmlObject) {
         m_qmlObject = new PlasmaQuick::SharedQmlEngine(this);
     }
@@ -82,6 +97,7 @@ QQuickItem *FloatingToolTipDialog::loadDefaultItem()
     }
 
     return qobject_cast<QQuickItem *>(m_qmlObject->rootObject());
+#endif
 }
 
 void FloatingToolTipDialog::showEvent(QShowEvent *event)

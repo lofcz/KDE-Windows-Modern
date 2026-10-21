@@ -50,7 +50,7 @@ Loader {
 
     property bool blockingUpdates: false
     property bool reordering: false
-    property rect windowGeometry: Qt.rect(0, 0, 0, 0)
+    property bool isReadyForPainting: false
 
     readonly property bool isVerticalPanel: Plasmoid.formFactor === PlasmaCore.Types.Vertical
     // Win11: tooltip width; title spans the full width, so give it room
@@ -86,7 +86,7 @@ Loader {
             isOnAllVirtualDesktops: toolTipDelegate.isOnAllVirtualDesktops
             virtualDesktops: toolTipDelegate.virtualDesktops
             activities: toolTipDelegate.activities
-            windowGeometry: toolTipDelegate.windowGeometry
+            isReadyForPainting: toolTipDelegate.isReadyForPainting
             model: null
         }
     }
@@ -210,7 +210,8 @@ Loader {
                     activities: model.Activities
                     hasTrackInATitle: groupToolTipListView.hasTrackInATitle
                     orientation: groupToolTipListView.orientation
-                    windowGeometry: model.Geometry
+                    isReadyForPainting: model.IsMapped
+                        ?? (model.Geometry?.width > 0 && model.Geometry?.height > 0)
                     groupListView: groupToolTipListView
                 }
             }

@@ -1,31 +1,45 @@
+diff --git a/src/frontend/greeter/main.cpp b/src/frontend/greeter/main.cpp
+index 8a5d230..edc2472 100644
 --- a/src/frontend/greeter/main.cpp
 +++ b/src/frontend/greeter/main.cpp
-@@ -10,6 +10,8 @@
- #include <QObject>
- #include <QQmlContext>
- #include <QScreen>
-+#include <QDir>
+@@ -9,0 +10,2 @@
 +#include <QFile>
- 
- #include <KLocalizedString>
- #include <KWindowSystem>
-@@ -85,7 +87,18 @@
-         window->installEventFilter(greeterEventFilter);
-         window->rootContext()->setContextProperty(QStringLiteral("greeterEventFilter"), greeterEventFilter);
- 
--        window->setSource(QUrl("qrc:/qt/qml/org/kde/plasma/login/Main.qml"));
-+        QString systemThemePath = QStringLiteral("/usr/share/plasma/look-and-feel/org.kde.windowsmodern.dark"
-+                                                  "/contents/lockscreen/Main.qml");
-+        QString userThemePath = QDir::homePath()
-+            + QStringLiteral("/.local/share/plasma/look-and-feel/org.kde.windowsmodern.dark"
-+                             "/contents/lockscreen/Main.qml");
-+        if (QFile::exists(systemThemePath)) {
-+            window->setSource(QUrl::fromLocalFile(systemThemePath));
-+        } else if (QFile::exists(userThemePath)) {
-+            window->setSource(QUrl::fromLocalFile(userThemePath));
-+        } else {
-+            window->setSource(QUrl(QStringLiteral("qrc:/qt/qml/org/kde/plasma/login/Main.qml")));
++#include <QStandardPaths>
+@@ -12,0 +15 @@
++#include <QQuickItem>
+@@ -51,0 +55,12 @@ public:
++    ~LoginGreeter() override
++    {
++        // Views borrow m_engine. Destroy them before the shared engine is released.
++        const auto views = findChildren<QQuickView *>(Qt::FindDirectChildrenOnly);
++        for (QQuickView *view : views) {
++            if (QQuickItem *focusItem = view->activeFocusItem()) {
++                focusItem->setFocus(false);
++            }
++            delete view;
 +        }
-         window->show();
-     }
- 
++    }
++
+@@ -78 +93,21 @@ private:
+-        window->setSource(QUrl("qrc:/qt/qml/org/kde/plasma/login/Main.qml"));
++        const QUrl stockSource(QStringLiteral("qrc:/qt/qml/org/kde/plasma/login/Main.qml"));
++        const QString relativeTheme = QStringLiteral("plasma/look-and-feel/org.kde.windowsmodern.dark/contents/lockscreen/Main.qml");
++        QString themePath;
++        if (s_testMode) {
++            themePath = qEnvironmentVariable("WINDOWS_MODERN_GREETER_THEME");
++            if (themePath.isEmpty()) {
++                themePath = QStandardPaths::locate(QStandardPaths::GenericDataLocation, relativeTheme);
++            }
++        } else {
++            // Before login, only load the administrator-installed theme.
++            themePath = QStringLiteral("/usr/share/") + relativeTheme;
++        }
++        if (!themePath.isEmpty() && QFile::exists(themePath)) {
++            window->setSource(QUrl::fromLocalFile(themePath));
++            if (window->status() == QQuickView::Error || !window->rootObject()) {
++                qWarning() << "Windows Modern greeter could not load; using the built-in login screen";
++                window->setSource(stockSource);
++            }
++        } else {
++            window->setSource(stockSource);
++        }

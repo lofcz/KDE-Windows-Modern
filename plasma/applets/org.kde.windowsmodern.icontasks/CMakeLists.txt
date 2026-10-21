@@ -14,6 +14,7 @@ include(ECMQtDeclareLoggingCategory)
 find_package(Qt6 REQUIRED COMPONENTS Core DBus Qml Quick QuickControls2)
 find_package(KF6 REQUIRED COMPONENTS
     Config
+    GlobalAccel
     I18n
     KIO
     Service
@@ -95,6 +96,7 @@ target_link_libraries(org.kde.plasma.icontasks PRIVATE
     Plasma::Activities
     Plasma::ActivitiesStats
     KF6::ConfigGui
+    KF6::GlobalAccel
     KF6::I18n
     KF6::KIOCore
     KF6::KIOGui
@@ -105,6 +107,7 @@ target_link_libraries(org.kde.plasma.icontasks PRIVATE
     KSysGuard::ProcessCore
     KF6::Service
     KF6::WindowSystem
+    KF6::XmlGui
     PW::LibNotificationManager
 )
 

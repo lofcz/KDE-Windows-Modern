@@ -38,6 +38,7 @@ class FloatingToolTipArea : public QQuickItem
     Q_PROPERTY(int timeout MEMBER m_timeout WRITE setTimeout)
 
     Q_PROPERTY(int margin READ margin WRITE setMargin NOTIFY marginChanged)
+    Q_PROPERTY(bool hideOnClick MEMBER m_hideOnClick NOTIFY hideOnClickChanged)
 
 public:
     explicit FloatingToolTipArea(QQuickItem *parent = nullptr);
@@ -98,6 +99,7 @@ Q_SIGNALS:
     void activeChanged();
     void interactiveChanged();
     void marginChanged();
+    void hideOnClickChanged();
     void aboutToShow();
     void toolTipVisibleChanged(bool toolTipVisible);
 
@@ -123,6 +125,7 @@ private:
     int m_interval;
     int m_timeout;
     int m_margin;
+    bool m_hideOnClick = true;
 
     bool m_usingDialog : 1;
     static FloatingToolTipDialog *s_dialog;

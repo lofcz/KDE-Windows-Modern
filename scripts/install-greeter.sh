@@ -1,135 +1,41 @@
-#!/bin/bash
-# ───────────────────────────────────────────────────────────────────
-#  install-greeter.sh — PLM boot greeter (build + user theme install)
-#
-#  Builds a patched plasma-login-greeter that loads our Windows Modern
-#  Main.qml from the dark look-and-feel package, and installs the theme
-#  QML to the user look-and-feel directory for --test mode.
-#
-#  This does NOT touch system files. To install as your actual boot
-#  greeter, run:  sudo bash scripts/install-greeter-live.sh
-# ───────────────────────────────────────────────────────────────────
-source "$(dirname "$0")/install-lib.sh"
-
+#!/usr/bin/env bash
+# Build the matching PLM release without discarding local source changes.
+set -euo pipefail
+SRC_DIR="$(cd "$(dirname "$0")/.." && pwd -P)"
 PLM_DIR="$SRC_DIR/third_party/plasma-login-manager"
-PATCH_DIR="$SRC_DIR/plasma/look-and-feel/org.kde.windowsmodern.dark/patches"
+PATCH="$SRC_DIR/plasma/look-and-feel/org.kde.windowsmodern.dark/patches/main-cpp.patch"
+BUILD_DIR="${WM_GREETER_BUILD_DIR:-$PLM_DIR/build-user}"
 THEME_SRC="$SRC_DIR/plasma/look-and-feel/org.kde.windowsmodern.dark/contents/lockscreen"
-PATCHES=(
-    "main-cpp.patch"
-)
+THEME_DST="$HOME/.local/share/plasma/look-and-feel/org.kde.windowsmodern.dark/contents/lockscreen"
 
-info "Installing Windows Modern PLM boot greeter..."
-
-# ── Verify PLM source exists ──
-if [ ! -d "${PLM_DIR}" ]; then
-    err "PLM source not found at ${PLM_DIR}"
-    err "Make sure the submodule is initialized:"
-    err "  git submodule update --init --recursive"
+if [ "$(git -C "$PLM_DIR" rev-parse --show-toplevel 2>/dev/null || true)" != "$PLM_DIR" ]; then
+    echo 'Initialize third_party/plasma-login-manager before building.' >&2
     exit 1
 fi
 
-# ── Verify PLM is clean ──
-PLM_DIRTY=$(cd "${PLM_DIR}" && git status --porcelain 2>/dev/null | wc -l)
-if [ "$PLM_DIRTY" -gt 0 ]; then
-    warn "PLM repo has uncommitted changes. Resetting to clean state..."
-    (cd "${PLM_DIR}" && git reset --hard HEAD)
-fi
-
-# ── Determine whether a build is needed ──
-BUILD_DIR="${PLM_DIR}/build-user"
-BINARY="${BUILD_DIR}/bin/plasma-login-greeter"
-mkdir -p "${BUILD_DIR}"
-
-BUILD_NEEDED=false
-SOURCE_COMMIT_FILE="${BUILD_DIR}/.source_commit"
-CURRENT_COMMIT=$(cd "${PLM_DIR}" && git rev-parse HEAD 2>/dev/null || echo "unknown")
-if [ ! -f "$BINARY" ]; then
-    BUILD_NEEDED=true
-elif [ ! -f "$SOURCE_COMMIT_FILE" ] || [ "$(cat "$SOURCE_COMMIT_FILE" 2>/dev/null)" != "$CURRENT_COMMIT" ]; then
-    BUILD_NEEDED=true
-else
-    for patch_name in "${PATCHES[@]}"; do
-        patch_path="${PATCH_DIR}/${patch_name}"
-        if [ "$patch_path" -nt "$BINARY" ]; then
-            BUILD_NEEDED=true
-            break
-        fi
-    done
-fi
-
-# Ensure patches are ALWAYS reverted, even if the build fails (set -e would
-# otherwise skip the revert step and leave the submodule dirty).
-revert_patches() {
-    for patch_name in "${PATCHES[@]}"; do
-        patch_path="${PATCH_DIR}/${patch_name}"
-        patch --batch -d "${PLM_DIR}" -R -p1 < "${patch_path}" 2>/dev/null || true
-    done
-}
-trap revert_patches EXIT
-
-if [ "$BUILD_NEEDED" = false ]; then
-    step "Patched binary already up-to-date, skipping build."
-else
-    # ── Apply all PLM patches ──
-    for patch_name in "${PATCHES[@]}"; do
-        patch_path="${PATCH_DIR}/${patch_name}"
-        step "Applying ${patch_name}..."
-        if patch -d "${PLM_DIR}" -p1 --dry-run -s -f < "${patch_path}" 2>/dev/null; then
-            patch -d "${PLM_DIR}" -p1 < "${patch_path}"
-            echo "    Patch applied."
-        else
-            echo "    Patch already applied or not needed — skipping."
-        fi
-    done
-
-    step "Building plasma-login-manager..."
-    cd "${BUILD_DIR}"
-
-    # Configure if needed. A previously FAILED configure can leave a stale
-    # CMakeCache.txt with no Makefile, so reconfigure whenever the Makefile
-    # is missing.
-    if [ ! -f Makefile ]; then
-        echo "  Configuring CMake..."
-        rm -f CMakeCache.txt
-        cmake "${PLM_DIR}" \
-            -DCMAKE_BUILD_TYPE=RelWithDebInfo \
-            -DCMAKE_INSTALL_PREFIX="/usr" \
-            -DQT_MAJOR_VERSION=6
+applied=0
+cleanup() {
+    if [ "$applied" = 1 ]; then
+        patch --batch -R -d "$PLM_DIR" -p1 < "$PATCH"
     fi
-
-    cmake --build . --target plasma-login-greeter --parallel "$(nproc)"
-    echo "  Build complete."
-    echo "$CURRENT_COMMIT" > "$SOURCE_COMMIT_FILE"
+}
+trap cleanup EXIT
+if patch --batch --dry-run -d "$PLM_DIR" -p1 < "$PATCH" >/dev/null 2>&1; then
+    patch --batch -d "$PLM_DIR" -p1 < "$PATCH"
+    applied=1
+elif ! patch --batch --dry-run -R -d "$PLM_DIR" -p1 < "$PATCH" >/dev/null 2>&1; then
+    echo 'The greeter patch does not apply. Source changes were preserved.' >&2
+    exit 1
 fi
 
-# Patches are reverted automatically by the EXIT trap (defined above) so the
-# submodule stays clean even if the build failed. The theme install below is
-# pure file copy and needs no patch, so disabling the trap is fine here.
-trap - EXIT
-revert_patches
+libexec=libexec
+if [ -f /usr/lib/plasma-login-greeter ]; then libexec=lib; fi
+cmake -S "$PLM_DIR" -B "$BUILD_DIR" -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr -DKDE_INSTALL_LIBEXECDIR="$libexec"
+cmake --build "$BUILD_DIR" --target plasma-login-greeter --parallel "${WM_BUILD_JOBS:-4}"
 
-# ── Install theme to user look-and-feel directory for testing ──
-THEME_DST="$HOME/.local/share/plasma/look-and-feel/org.kde.windowsmodern.dark/contents/lockscreen"
-step "Installing theme to user directory for testing..."
-mkdir -p "$(dirname "${THEME_DST}")"
-rm -rf "${THEME_DST}"
-cp -r "${THEME_SRC}" "${THEME_DST}"
-echo "    Theme installed to: ${THEME_DST}"
-echo ""
-echo "  To reload theme changes without rebuild:"
-echo "    cp plasma/look-and-feel/org.kde.windowsmodern.dark/contents/lockscreen/*.qml \\"
-echo "       ~/.local/share/plasma/look-and-feel/org.kde.windowsmodern.dark/contents/lockscreen/"
-
-echo ""
-echo "=============================================="
-echo "PLM boot greeter built successfully."
-echo "=============================================="
-echo ""
-echo "To test safely (no system changes):"
-echo "  ${BUILD_DIR}/bin/plasma-login-greeter --test"
-echo ""
-echo "To install as your ACTUAL boot greeter:"
-echo "  sudo bash scripts/install-greeter-live.sh"
-echo ""
-warn "This shows warnings and requires typing YES."
-warn "Keep a TTY (Ctrl+Alt+F3) open before proceeding."
+mkdir -p "$THEME_DST"
+rsync -a --delete "$THEME_SRC/" "$THEME_DST/"
+printf 'Built: %s/bin/plasma-login-greeter\n' "$BUILD_DIR"
+printf 'Test with: WINDOWS_MODERN_GREETER_THEME=%q %q --test\n' "$THEME_DST/Main.qml" "$BUILD_DIR/bin/plasma-login-greeter"
+echo 'The active login manager and graphical session were left running.'

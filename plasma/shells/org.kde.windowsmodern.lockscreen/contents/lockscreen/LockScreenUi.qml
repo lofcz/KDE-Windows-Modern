@@ -9,12 +9,16 @@ import org.kde.plasma.workspace.components as PW
 import org.kde.kirigami as Kirigami
 import org.kde.plasma.private.sessions
 import org.kde.plasma.private.keyboardindicator as KeyboardIndicator
+import org.kde.plasma.workspace.keyboardlayout as Keyboards
+import org.kde.plasma.private.accessibility
+import org.kde.kscreenlocker as ScreenLocker
 import org.kde.breeze.components
 
 Item {
     id: lockScreenUi
 
     readonly property bool softwareRendering: GraphicsInfo.api === GraphicsInfo.Software
+    readonly property QtObject authenticationBackend: authenticator
 
     function handleMessage(msg) {
         if (!root.notification) {
@@ -24,24 +28,25 @@ Item {
         } else {
             root.notification += "\n" + msg
         }
+        lockScreenRoot.uiVisible = true;
     }
 
     Kirigami.Theme.inherit: false
     Kirigami.Theme.colorSet: Kirigami.Theme.Complementary
 
     // ── Authenticator connections ──
-    Connections {
-        target: authenticator
-        function onFailed(kind) {
-            if (kind != 0) return;
+    LockScreenAuth {
+        id: authentication
+        authenticator: lockScreenUi.authenticationBackend
+        onClearPassword: root.clearPassword()
+        onRejected: {
             const msg = i18ndc("plasma_shell_org.kde.plasma.desktop", "@info:status", "Unlocking failed");
             lockScreenUi.handleMessage(msg);
-            graceLockTimer.restart();
             notificationRemoveTimer.restart();
             rejectPasswordAnimation.start();
         }
-        function onSucceeded() {
-            if (authenticator.hadPrompt) {
+        onAuthenticated: immediate => {
+            if (immediate) {
                 Qt.quit();
             } else {
                 mainStack.replace(null, Qt.resolvedUrl("NoPasswordUnlock.qml"),
@@ -49,16 +54,8 @@ Item {
                 mainStack.forceActiveFocus();
             }
         }
-        function onInfoMessageChanged() {
-            lockScreenUi.handleMessage(authenticator.infoMessage);
-        }
-        function onErrorMessageChanged() {
-            lockScreenUi.handleMessage(authenticator.errorMessage);
-        }
-        function onPromptChanged(msg) {
-            lockScreenUi.handleMessage(authenticator.prompt);
-        }
-        function onPromptForSecretChanged(msg) {
+        onMessage: text => lockScreenUi.handleMessage(text)
+        onSecretPrompted: {
             mainBlock.showPassword = false;
             mainBlock.mainPasswordBox.forceActiveFocus();
         }
@@ -68,9 +65,11 @@ Item {
         id: sessionManagement
     }
 
+    AccessibilityStatus { id: accessibilityStatus }
+
     Connections {
         target: sessionManagement
-        function onAboutToSuspend() { root.clearPassword(); }
+        function onAboutToSuspend() { authentication.reset(); }
     }
 
     RejectPasswordAnimation {
@@ -102,8 +101,8 @@ Item {
         hoverEnabled: true
 
         property bool uiVisible: false
-        property bool blockUI: containsMouse && (mainStack.depth > 1 || mainBlock.mainPasswordBox.text.length > 0)
-        property bool loginUiActive: uiVisible || mainBlock.mainPasswordBox.text.length > 0 || graceLockTimer.running
+        property bool blockUI: containsMouse && (mainStack.depth > 1 || mainBlock.mainPasswordBox.text.length > 0 || Keyboards.KWinVirtualKeyboard.visible)
+        property bool loginUiActive: uiVisible || mainBlock.mainPasswordBox.text.length > 0 || authentication.waitingForPam
         cursorShape: Qt.ArrowCursor
         drag.filterChildren: true
 
@@ -131,12 +130,19 @@ Item {
             if (blockUI) { fadeoutTimer.running = false; uiVisible = true }
             else { fadeoutTimer.restart() }
         }
-        onExited: {
-            if (powerMenu.opened) return;
-            uiVisible = false;
+        ScreenLocker.ActiveScreenMonitor {
+            lockscreenState: ScreenLocker.LockscreenState
+            window: lockScreenRoot.Window.window
+            onActiveChanged: {
+                if (!active && !powerMenu.opened) lockScreenRoot.uiVisible = false;
+            }
         }
         Keys.onEscapePressed: {
-            if (uiVisible) { uiVisible = false; root.clearPassword() }
+            if (uiVisible) {
+                uiVisible = false;
+                Keyboards.KWinVirtualKeyboard.active = false;
+                authentication.reset();
+            }
         }
         Keys.onPressed: event => { uiVisible = true; event.accepted = false }
 
@@ -151,19 +157,26 @@ Item {
             }
         }
         Timer { id: notificationRemoveTimer; interval: 3000; onTriggered: root.notification = "" }
-        Timer { id: graceLockTimer; interval: 3000; onTriggered: { authenticator.startAuthenticating() } }
+        Timer {
+            interval: 1000
+            repeat: true
+            running: !authenticator.unlocked && lockScreenRoot.uiVisible
+            onTriggered: authenticator.startAuthenticating()
+        }
 
         // ── Wallpaper layer ──
-        WallpaperFader {
+        FastBlur {
             id: wallpaperFader
             anchors.fill: parent
-            state: lockScreenRoot.loginUiActive ? "on" : "off"
             source: wallpaper
-            mainStack: mainStack
-            footer: footer
-
-            clock: windowsClock
-            alwaysShowClock: true
+            radius: lockScreenRoot.loginUiActive ? 50 : 0
+            visible: radius > 0
+            Behavior on radius {
+                NumberAnimation {
+                    duration: Kirigami.Units.veryLongDuration * 2
+                    easing.type: Easing.InOutQuad
+                }
+            }
         }
 
         // ── Dark overlay (Win11 lock dimming) ──
@@ -246,7 +259,7 @@ Item {
             anchors.topMargin: Kirigami.Units.largeSpacing * 2
             anchors.horizontalCenter: parent.horizontalCenter
             source: "MediaControls.qml"
-            active: cfg_showMediaControls
+            active: config.showMediaControls ?? true
             visible: !lockScreenRoot.loginUiActive
         }
 
@@ -319,20 +332,58 @@ Item {
                 id: mainBlock
                 lockScreenUiVisible: lockScreenRoot.uiVisible
                 showUserList: true
-                lockedOut: graceLockTimer.running
+                enabled: !authentication.waitingForPam
+                lockedOut: authentication.waitingForPam
                 StackView.onStatusChanged: {
                     if (StackView.status === StackView.Activating) {
                         mainPasswordBox.clear(); mainPasswordBox.focus = true; root.notification = "";
                     }
                 }
                 userListModel: users
+                authenticationTypeItem: RowLayout {
+                    Layout.alignment: Qt.AlignHCenter
+                    visible: authenticationMethods.count > 1
+                    Repeater {
+                        id: authenticationMethods
+                        model: ScreenLocker.AuthenticatorModel
+                        delegate: PlasmaComponents3.Button {
+                            required property int type
+                            required property string iconName
+                            required property bool passwordField
+                            required property bool expectingPrompt
+                            required property string tooltip
+                            required property bool showPrompt
+                            required property bool functional
+                            enabled: functional
+                            icon.name: iconName
+                            checked: authenticator.authenticator === type
+                            onClicked: {
+                                authentication.selectAuthenticator(type, expectingPrompt, showPrompt);
+                                root.notification = "";
+                                mainBlock.passwordInputVisible = passwordField;
+                            }
+                            onFunctionalChanged: {
+                                if (!functional && checked) {
+                                    authentication.reset();
+                                    mainBlock.passwordInputVisible = false;
+                                    lockScreenUi.handleMessage(i18ndc("plasma_shell_org.kde.plasma.desktop", "@info:status", "This authentication method is unavailable. Please try another method."));
+                                }
+                            }
+                            PlasmaComponents3.ToolTip.text: tooltip
+                            PlasmaComponents3.ToolTip.visible: hovered
+                            PlasmaComponents3.ToolTip.delay: Kirigami.Units.toolTipDelay
+                            Component.onCompleted: if (checked) clicked()
+                        }
+                    }
+                }
                 customErrorMessage: {
                     const parts = [];
                     if (capsLockState.locked) parts.push(i18ndc("plasma_shell_org.kde.plasma.desktop", "@info:status", "Caps Lock is on"));
+                    if (accessibilityStatus.slowKeysEnabled) parts.push(i18ndc("plasma_shell_org.kde.plasma.desktop", "@info:status", "Slow Keys are enabled"));
                     if (root.notification) parts.push(root.notification);
                     return parts.join(" \u2022 ");
                 }
-                onPasswordResult: password => { authenticator.respond(password) }
+                onPasswordResult: password => authentication.submit(password)
             }
         }
 
@@ -414,6 +465,19 @@ Item {
             id: footer
             anchors { bottom: parent.bottom; left: parent.left; right: parent.right; margins: Kirigami.Units.smallSpacing }
             spacing: Kirigami.Units.smallSpacing
+            PlasmaComponents3.ToolButton {
+                icon.name: Keyboards.KWinVirtualKeyboard.visible ? "input-keyboard-virtual-on" : "input-keyboard-virtual-off"
+                text: i18ndc("plasma_shell_org.kde.plasma.desktop", "@action:button", "Virtual Keyboard")
+                display: AbstractButton.IconOnly
+                onClicked: {
+                    if (Keyboards.KWinVirtualKeyboard.visible) {
+                        Keyboards.KWinVirtualKeyboard.active = false;
+                    } else {
+                        mainBlock.mainPasswordBox.forceActiveFocus();
+                        Keyboards.KWinVirtualKeyboard.forceActivate();
+                    }
+                }
+            }
             visible: lockScreenRoot.uiVisible
 
             PlasmaComponents3.ToolButton {
@@ -510,12 +574,14 @@ Item {
                 MenuItem {
                     text: i18ndc("plasma_shell_org.kde.plasma.desktop", "@action:button", "&Shut Down")
                     icon.name: "system-shutdown"
-                    onTriggered: root.powerOff()
+                    enabled: sessionManagement.canShutdown
+                    onTriggered: sessionManagement.requestShutdown(SessionManagement.ConfirmationMode.Skip)
                 }
                 MenuItem {
                     text: i18ndc("plasma_shell_org.kde.plasma.desktop", "@action:button", "&Restart")
                     icon.name: "system-reboot"
-                    onTriggered: root.reboot()
+                    enabled: sessionManagement.canReboot
+                    onTriggered: sessionManagement.requestReboot(SessionManagement.ConfirmationMode.Skip)
                 }
             }
             PlasmaComponents3.ToolButton {

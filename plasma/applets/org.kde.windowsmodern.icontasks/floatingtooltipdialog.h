@@ -12,12 +12,19 @@
 #include <QTimer>
 #include <QVariant>
 
-class QQuickItem;
+#include <plasma_version.h>
 
+#include <memory>
+
+class QQuickItem;
+class QQmlEngine;
+
+#if PLASMA_VERSION < QT_VERSION_CHECK(6, 8, 0)
 namespace PlasmaQuick
 {
 class SharedQmlEngine;
 }
+#endif
 
 class FloatingToolTipDialog : public PlasmaQuick::PopupPlasmaWindow
 {
@@ -54,7 +61,12 @@ private:
     void updateSize();
 
     QPointer<QQuickItem> m_lastMainItem;
+#if PLASMA_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+    std::shared_ptr<QQmlEngine> m_engine;
+    std::unique_ptr<QQuickItem> m_qmlObject;
+#else
     PlasmaQuick::SharedQmlEngine *m_qmlObject;
+#endif
     QTimer m_hideTimer;
     int m_hideTimeout;
     bool m_interactive;

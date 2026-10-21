@@ -64,7 +64,7 @@ FloatingToolTipArea {
 
     readonly property int pid: model.AppPid
     readonly property string appName: model.AppName
-    readonly property string appId: model.AppId.replace(/\.desktop/, '')
+    readonly property string appId: model.AppId
     readonly property bool isIcon: tasksRoot.iconsOnly || model.IsLauncher
     property bool toolTipOpen: false
     property bool inPopup: false
@@ -99,8 +99,9 @@ FloatingToolTipArea {
         || (task.contextMenu && task.contextMenu.status === PlasmaExtras.Menu.Open)
         || (!!tasksRoot.groupDialog && tasksRoot.groupDialog.visualParent === task)
 
-    active: !inPopup && !tasksRoot.groupDialog && task.contextMenu?.status !== PlasmaExtras.Menu.Open && model.IsWindow
+    active: !inPopup && !tasksRoot.groupDialog && task.contextMenu?.status !== PlasmaExtras.Menu.Open && model.IsWindow && task === (tasksRoot.toolTipOpenedByClick ?? task)
     interactive: model.IsWindow || mainItem.playerData
+    hideOnClick: !(hasAudioStream && audioIndicatorsEnabled)
     location: Plasmoid.location
     margin: (Plasmoid.containmentDisplayHints & PlasmaCore.Types.ContainmentPrefersFloatingApplets) ? Kirigami.Units.largeSpacing : 0
     mainItem: !Plasmoid.configuration.showToolTips || !model.IsWindow ? pinnedAppToolTipDelegate : openWindowToolTipDelegate
@@ -206,7 +207,9 @@ FloatingToolTipArea {
     }
 
     onContainsMouseChanged: {
-        if (containsMouse) {
+        if (tasksRoot.toolTipOpenedByClick && tasksRoot.toolTipOpenedByClick === mainItem.parentTask) {
+            tasksRoot.toolTipOpenedByClick.showToolTip();
+        } else if (containsMouse) {
             task.forceActiveFocus(Qt.MouseFocusReason);
             task.updateMainItemBindings();
         } else if (!task.toolTipOpen) {
@@ -352,9 +355,14 @@ FloatingToolTipArea {
             return;
         }
 
+        var streams = [];
+
         // Check appid first for app using portal
         // https://docs.pipewire.org/page_portal.html
-        var streams = pa.streamsForAppId(task.appId);
+        if (task.appId) {
+            streams = pa.streamsForAppId(task.appId);
+        }
+
         if (!streams.length) {
             streams = pa.streamsForPid(model.AppPid);
             if (streams.length) {
@@ -407,10 +415,10 @@ FloatingToolTipArea {
         mainItem.virtualDesktops = Qt.binding(() => model.VirtualDesktops);
         mainItem.isOnAllVirtualDesktops = Qt.binding(() => model.IsOnAllVirtualDesktops);
         mainItem.activities = Qt.binding(() => model.Activities);
-        // KWin rejects PipeWire screencasts until the window has a real
-        // buffer. Geometry 0x0 means "not ready for painting" — requesting
-        // a thumbnail then produces a dead stream (icon or blank preview).
-        mainItem.windowGeometry = Qt.binding(() => model.Geometry);
+        // Plasma 6.8 exposes whether the window has a buffer directly.
+        // Keep the geometry fallback for older task-manager models.
+        mainItem.isReadyForPainting = Qt.binding(() => model.IsMapped
+            ?? (model.Geometry?.width > 0 && model.Geometry?.height > 0));
 
         mainItem.smartLauncherCountVisible = Qt.binding(() => smartLauncherItem?.countVisible ?? false);
         mainItem.smartLauncherCount = Qt.binding(() => mainItem.smartLauncherCountVisible ? (smartLauncherItem?.count ?? 0) : 0);
@@ -446,7 +454,6 @@ FloatingToolTipArea {
     TapHandler {
         acceptedButtons: Qt.RightButton
         acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad | PointerDevice.Stylus
-        gesturePolicy: TapHandler.WithinBounds // Release grab when menu appears
         onPressedChanged: if (pressed) contextMenuTimer.start()
     }
 

@@ -13,6 +13,7 @@ import QtQuick.Controls 2.15 as QQC2
 import org.kde.kirigami 2.20 as Kirigami
 import org.kde.breeze.components as BreezeComponents
 import org.kde.plasma.private.keyboardindicator as KeyboardIndicator
+import org.kde.plasma.workspace.keyboardlayout as Keyboards
 
 import org.kde.plasma.login as PlasmaLogin
 
@@ -40,17 +41,18 @@ Item {
         target: mainStack
     }
 
-    Connections {
-        target: greeterEventFilter
+    PlasmaLogin.GreeterEventFilter {
+        window: root.Window.window
 
-        function onKeyPressed(): void {
+        onKeyPressed: {
             // callLater, as otherwise 'enter' key press would arrive after waking
             // and the uiVisible check would pass and a login attempt would be made
             Qt.callLater(() => PlasmaLogin.GreeterState.activateWindow(loginScreenRoot.Window.window));
         }
 
-        function onEscapeKeyPressed(): void {
+        onEscapeKeyPressed: {
             PlasmaLogin.GreeterState.timeoutWindow(loginScreenRoot.Window.window);
+            Keyboards.KWinVirtualKeyboard.active = false;
             PlasmaLogin.GreeterState.clearPasswords();
         }
     }

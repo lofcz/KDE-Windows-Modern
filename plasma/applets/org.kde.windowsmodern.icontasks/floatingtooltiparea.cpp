@@ -383,7 +383,7 @@ void FloatingToolTipArea::hoverLeaveEvent(QHoverEvent *event)
 
 bool FloatingToolTipArea::childMouseEventFilter(QQuickItem *item, QEvent *event)
 {
-    if (event->type() == QEvent::MouseButtonPress) {
+    if (event->type() == QEvent::MouseButtonPress && m_hideOnClick) {
         hideToolTip();
     }
     return QQuickItem::childMouseEventFilter(item, event);

@@ -34,7 +34,7 @@ Item {
     required property bool isOnAllVirtualDesktops
     required property /*list<var>*/ var virtualDesktops
     required property list<string> activities
-    required property rect windowGeometry
+    required property bool isReadyForPainting
 
     property bool hasTrackInATitle: false
     property int orientation: ListView.Vertical
@@ -340,10 +340,8 @@ Item {
                 return undefined
             }
 
-            // Same gate as plasma-desktop !3959: KWin rejects screencasts
-            // until the window is ready for painting (non-zero geometry).
-            readonly property bool isReadyForPainting: root.windowGeometry.width > 0
-                && root.windowGeometry.height > 0
+            // KWin rejects screencasts until the window has a buffer.
+            readonly property bool isReadyForPainting: root.isReadyForPainting
                 && winId !== undefined
                 && winId !== null
                 && winId !== ""
@@ -357,56 +355,9 @@ Item {
             }
 
             Loader {
-                id: thumbnailLoader
-                active: !toolTipDelegate.isLauncher
-                    && !albumArtImage.visible
-                    && (Number.isInteger(thumbnailSourceItem.winId) || pipeWireLoader.item
-                    && !(pipeWireLoader.item as PipeWireThumbnail).hasThumbnail)
-                    && root.index !== -1
-                asynchronous: true
-                visible: active
-                anchors.fill: hoverHandler
-                anchors.margins: Kirigami.Units.smallSpacing * 2
-
-                sourceComponent: root.isMinimized || pipeWireLoader.active ? iconItem : x11Thumbnail
-
-                Component {
-                    id: x11Thumbnail
-                    PlasmaCore.WindowThumbnail {
-                        winId: thumbnailSourceItem.winId
-                    }
-                }
-
-                Component {
-                    id: iconItem
-                    Kirigami.Icon {
-                        id: realIconItem
-                        source: toolTipDelegate.icon
-                        animated: false
-                        visible: valid
-                        opacity: pipeWireLoader.active ? 0 : 1
-
-                        SequentialAnimation {
-                            running: true
-                            PauseAnimation {
-                                duration: Kirigami.Units.humanMoment
-                            }
-                            NumberAnimation {
-                                duration: Kirigami.Units.longDuration
-                                easing.type: Easing.OutCubic
-                                property: "opacity"
-                                target: realIconItem
-                                to: 1
-                            }
-                        }
-                    }
-                }
-            }
-
-            Loader {
                 id: pipeWireLoader
                 anchors.fill: hoverHandler
-                anchors.margins: thumbnailLoader.anchors.margins
+                anchors.margins: Kirigami.Units.smallSpacing * 2
 
                 active: Plasmoid.configuration.showToolTips
                     && !toolTipDelegate.isLauncher

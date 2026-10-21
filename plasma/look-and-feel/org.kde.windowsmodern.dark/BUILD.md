@@ -2,7 +2,7 @@
 
 The boot greeter is a **patched build of [plasma-login-manager](https://invent.kde.org/plasma/plasma-login-manager)**
 (vendored as a git submodule at `third_party/plasma-login-manager/`, branch
-`Plasma/6.6`). A single patch (`patches/main-cpp.patch`) redirects the
+`Plasma/6.8`). A single patch (`patches/main-cpp.patch`) redirects the
 greeter to load our `Main.qml` from the dark look-and-feel's
 `contents/lockscreen/` instead of the bundled qrc resource.
 
@@ -38,7 +38,7 @@ sudo dnf install gcc-c++ cmake extra-cmake-modules pkgconf-pkg-config \
 sudo pacman -S cmake extra-cmake-modules pkgconf \
   qt6-base qt6-declarative qt6-tools qt6-shadertools \
   kconfig kpackage kwindowsystem ki18n kdbusaddons kcmutils kauth kio \
-  plasma-framework plasma-workspace \
+  libplasma plasma-workspace \
   layer-shell-qt libkscreen pam
 ```
 
@@ -84,37 +84,31 @@ third_party/plasma-login-manager/build-user/bin/plasma-login-greeter --test
 sudo bash scripts/install-greeter-live.sh
 ```
 
-This backs up `/usr/libexec/plasma-login-greeter` to `.orig`, stops
-`plasmalogin.service` so the running binary can be overwritten, copies the
-patched binary into place, and installs the theme + wallpaper system-wide.
-Requires typing `YES`.
+The installer detects `/usr/lib/plasma-login-greeter` on Arch/CachyOS and
+`/usr/libexec/plasma-login-greeter` on distributions that use libexec. It
+backs up the current binary and atomically replaces it, then installs the
+theme and wallpaper system-wide. It does not stop or restart the display
+manager and does not sign out the current user.
 
-**You must reboot to activate the patched greeter.** The script does **not**
-start `plasmalogin.service` again, because doing so while you are logged into
-a graphical session spawns a greeter overlay on top of your desktop.
+The new greeter is used when the login manager next launches a greeter.
+KWin itself switches to the installed release on your next login or reboot;
+the installer never restarts a running Wayland compositor.
 
-**Keep a TTY open (Ctrl+Alt+F3) before proceeding** — if the patched
-binary crashes, you log in via TTY and revert.
+The patched greeter falls back to the built-in login screen if the custom
+QML cannot load. `WINDOWS_MODERN_GREETER_THEME=/path/to/Main.qml` selects a
+theme only in `--test` mode; live logins only load the system-installed theme.
 
 ## Revert
 
-Quick revert from the pristine backup (no package manager):
+Restore the backup printed by the installer with an atomic replacement:
 
 ```bash
-sudo cp /usr/libexec/plasma-login-greeter.orig /usr/libexec/plasma-login-greeter
-sudo reboot
+sudo install -m 755 /path/to/backup /usr/lib/plasma-login-greeter.restore
+sudo mv -Tf /usr/lib/plasma-login-greeter.restore /usr/lib/plasma-login-greeter
 ```
 
-> Do **not** run `sudo systemctl restart plasmalogin` while logged into a
-> graphical session — restarting the display manager spawns a greeter overlay
-> on top of your running desktop.
-
-Full revert (restores the distro package):
-
-```bash
-sudo bash scripts/uninstall-greeter-system.sh
-sudo reboot
-```
+Use `/usr/libexec` instead on distributions that install the greeter there.
+No display-manager restart is required to restore the next-login binary.
 
 Remove the user theme + revert any applied patches:
 
@@ -124,10 +118,10 @@ Remove the user theme + revert any applied patches:
 
 ## Update the PLM submodule
 
-To track a newer upstream release (e.g. Plasma 6.7):
+To track a newer upstream release (e.g. a Plasma 6.8 point release):
 
 ```bash
-./scripts/update-plm.sh Plasma/6.7
+./scripts/update-plm.sh Plasma/6.8
 ```
 
 This fetches the new branch, reapplies `main-cpp.patch`, and rebuilds.

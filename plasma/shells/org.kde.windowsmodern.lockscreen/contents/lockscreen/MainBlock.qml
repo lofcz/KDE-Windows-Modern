@@ -25,6 +25,7 @@ SessionManagementScreen {
     property bool lockScreenUiVisible: false
     property alias showPassword: passwordBox.showPassword
     property bool lockedOut: false
+    property alias passwordInputVisible: passwordLayout.visible
 
     showUserList: true
     property string customErrorMessage: ""
@@ -127,8 +128,15 @@ SessionManagementScreen {
 
     // ── MDL2 password field + submit button ──
     Item {
+        Binding {
+            target: PasswordSync
+            property: "password"
+            value: passwordBox.text
+        }
+        id: passwordLayout
         Layout.fillWidth: true
         implicitHeight: 32
+        enabled: !sessionManager.lockedOut
 
         Rectangle {
             id: passwordBorder
@@ -147,6 +155,7 @@ SessionManagementScreen {
             height: 32
 
             property bool showPassword: false
+            text: PasswordSync.password
             echoMode: showPassword ? TextInput.Normal : TextInput.Password
             placeholderText: i18ndc("plasma_shell_org.kde.plasma.desktop", "@info:placeholder in text field", "Password")
             placeholderTextColor: "#A0A0A0"
@@ -181,8 +190,10 @@ SessionManagementScreen {
             Connections {
                 target: root
                 function onClearPassword() {
+                    PasswordSync.password = "";
                     passwordBox.forceActiveFocus()
                     passwordBox.text = "";
+                    passwordBox.text = Qt.binding(() => PasswordSync.password);
                 }
                 function onNotificationRepeated() {
                     sessionManager.playHighlightAnimation();
@@ -222,52 +233,5 @@ SessionManagementScreen {
                 color: parent.hovered ? "#33FFFFFF" : "transparent"
             }
         }
-    }
-
-    component FailableLabel : PlasmaComponents3.Label {
-        id: _failableLabel
-        required property int kind
-        required property string label
-
-        visible: authenticator.authenticatorTypes & kind
-        text: label
-        textFormat: Text.PlainText
-        horizontalAlignment: Text.AlignHCenter
-        Layout.fillWidth: true
-        font.family: "Segoe UI"
-        font.pixelSize: 12
-        color: "#A0A0A0"
-
-        RejectPasswordAnimation {
-            id: _rejectAnimation
-            target: _failableLabel
-            onFinished: _timer.restart()
-        }
-
-        Connections {
-            target: authenticator
-            function onNoninteractiveError(kind, authenticator) {
-                if (kind & _failableLabel.kind) {
-                    _failableLabel.text = Qt.binding(() => authenticator.errorMessage)
-                    _rejectAnimation.start()
-                }
-            }
-        }
-        Timer {
-            id: _timer
-            interval: Kirigami.Units.humanMoment
-            onTriggered: {
-                _failableLabel.text = Qt.binding(() => _failableLabel.label)
-            }
-        }
-    }
-
-    FailableLabel {
-        kind: ScreenLocker.Authenticator.Fingerprint
-        label: i18ndc("plasma_shell_org.kde.plasma.desktop", "@info:usagetip", "(or scan your fingerprint on the reader)")
-    }
-    FailableLabel {
-        kind: ScreenLocker.Authenticator.Smartcard
-        label: i18ndc("plasma_shell_org.kde.plasma.desktop", "@info:usagetip", "(or scan your smartcard)")
     }
 }
