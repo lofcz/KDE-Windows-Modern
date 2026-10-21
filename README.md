@@ -134,6 +134,12 @@ A thin 6-pixel sliver at the far right of the panel. Click it to minimize or res
 
 A Win11-style start menu with Pinned apps, All Apps, and Search pages.
 
+- Drag a pin to the edge of another tile to reorder it, or drop in empty grid space to move it to the end.
+- Hold a pin over the center of another app until the folder preview appears, then release to group them.
+- Drop onto an existing folder to add an app. Open a folder to reorder its apps or edit its name.
+- Drag an app outside the open folder back into the pinned grid, or use **Move out of folder** in its context menu.
+- Folders with one remaining app automatically become regular pins. Layouts persist across Plasma restarts.
+
 - Install: `./install.sh startmenu`
 - Add it to the panel and remove the default Plasma menu.
 - Implementation plan: [`docs/STARTMENU_PLAN.md`](docs/STARTMENU_PLAN.md)

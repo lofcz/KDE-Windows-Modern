@@ -1,113 +1,141 @@
-/***************************************************************************
- *   License: GPL-3.0-or-later
- *
- *   Windows 11 pinned tile: icon above a two-line name.
- ***************************************************************************/
-
+/* SPDX-License-Identifier: GPL-3.0-or-later */
 import QtQuick
 import QtQuick.Layouts
-
 import org.kde.plasma.components as PlasmaComponents3
 import org.kde.kirigami as Kirigami
 
-import "../code/tools.js" as Tools
-import "../code/theme.js" as Theme
-
 Item {
     id: tile
-
     required property int index
-    required property var model
-
-    width: GridView.view ? GridView.view.cellWidth : parent.width
-    height: GridView.view ? GridView.view.cellHeight : parent.height
-
-    readonly property int itemIndex: model.index !== undefined ? model.index : index
+    required property var pin
+    required property var page
+    property string containerId: ""
+    property bool selected: GridView.isCurrentItem
     readonly property int glyphSize: Math.round(Kirigami.Units.iconSizes.large * 0.9)
-    readonly property bool highlighted: tile.GridView.isCurrentItem
+    readonly property bool isFolder: pin.type === "folder"
+    readonly property string title: pin.name || (isFolder ? qsTr("Folder") : "")
+    readonly property string dropMode: page.dragging && page.targetId === pin.id
+                                       && page.targetFolder === containerId ? page.dropMode : ""
+    readonly property bool sourceDragging: page.dragging && page.dragId === pin.id
+    objectName: "pinTile:" + containerId + ":" + pin.id
+    width: GridView.view ? GridView.view.cellWidth : 100
+    height: GridView.view ? GridView.view.cellHeight : 100
+    opacity: sourceDragging ? 0.35 : 1
 
     Accessible.role: Accessible.Button
-    Accessible.name: model.display !== undefined ? model.display : ""
+    Accessible.name: title
+    Accessible.onPressAction: page.activate(pin)
 
     Rectangle {
-        id: hoverBackground
         anchors.fill: parent
         anchors.margins: 4
         radius: 8
-        color: "#FFFFFF"
-        opacity: tile.highlighted ? 0.12 : 0
+        color: tile.dropMode === "inside" ? Kirigami.Theme.highlightColor : "#FFFFFF"
+        opacity: tile.dropMode === "inside" ? 0.25 : (tile.selected ? 0.12 : 0)
+        border.width: tile.dropMode === "inside" ? 2 : 0
+        border.color: Kirigami.Theme.highlightColor
         Behavior on opacity { NumberAnimation { duration: 60 } }
+    }
+    Rectangle {
+        visible: tile.dropMode === "before" || tile.dropMode === "after"
+        x: tile.dropMode === "after" ? parent.width - width : 0
+        y: 6
+        width: 3
+        height: parent.height - 12
+        radius: 1
+        color: Kirigami.Theme.highlightColor
     }
 
     ColumnLayout {
-        id: contentCol
         anchors.centerIn: parent
         width: tile.width - 12
         spacing: 4
-
-        Kirigami.Icon {
+        Item {
             Layout.alignment: Qt.AlignHCenter
             Layout.preferredWidth: tile.glyphSize
             Layout.preferredHeight: tile.glyphSize
-            animated: false
-            source: model.decoration !== undefined ? model.decoration : ""
+            scale: tile.dropMode === "inside" ? 0.86 : 1
+            Behavior on scale { NumberAnimation { duration: 100 } }
+            Kirigami.Icon {
+                anchors.fill: parent
+                visible: !tile.isFolder
+                animated: false
+                source: tile.pin.icon ?? "application-x-executable"
+            }
+            Rectangle {
+                anchors.fill: parent
+                visible: tile.isFolder
+                color: Qt.rgba(1, 1, 1, 0.08)
+                border.color: Qt.rgba(1, 1, 1, 0.14)
+                radius: 7
+                Grid {
+                    anchors.centerIn: parent
+                    columns: 2
+                    spacing: 3
+                    Repeater {
+                        model: tile.isFolder ? tile.pin.items.slice(0, 4) : []
+                        Kirigami.Icon {
+                            required property var modelData
+                            width: Math.floor((tile.glyphSize - 13) / 2)
+                            height: width
+                            animated: false
+                            source: modelData.icon
+                        }
+                    }
+                }
+            }
         }
-
         PlasmaComponents3.Label {
-            id: nameLabel
             Layout.fillWidth: true
-            Layout.preferredHeight: implicitHeight
             horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignTop
             wrapMode: Text.WordWrap
             maximumLineCount: 2
             elide: Text.ElideRight
             color: Kirigami.Theme.textColor
             font.pixelSize: Kirigami.Theme.defaultFont.pixelSize
-            text: ("name" in model ? model.name : (model.display !== undefined ? model.display : ""))
+            text: tile.title
             textFormat: Text.PlainText
         }
     }
 
+    // Move a separate anchor: GridView retains ownership of tile geometry.
+    // The page draws the drag ghost above both grids and the folder panel.
+    Item { id: dragAnchor; width: 1; height: 1 }
     MouseArea {
+        id: pointer
         anchors.fill: parent
-        hoverEnabled: false
         acceptedButtons: Qt.LeftButton | Qt.RightButton
-        cursorShape: Qt.PointingHandCursor
-        onClicked: mouse => {
-            var view = tile.GridView.view;
-            if (view)
-                view.currentIndex = tile.itemIndex;
-            if (mouse.button === Qt.RightButton) {
-                tile.openContextMenu(mouse.x, mouse.y);
-                return;
+        cursorShape: dragged ? Qt.ClosedHandCursor : Qt.PointingHandCursor
+        preventStealing: true
+        property bool dragged: false
+        drag.target: dragAnchor
+        onPressed: {
+            dragged = false;
+            dragAnchor.x = 0;
+            dragAnchor.y = 0;
+        }
+        onPositionChanged: mouse => {
+            if (!drag.active) return;
+            if (!dragged) {
+                dragged = true;
+                tile.page.beginDrag(tile.pin, tile.containerId);
             }
-            tile.launchApp();
+            const point = tile.mapToItem(tile.page, mouse.x, mouse.y);
+            tile.page.updateDrag(point.x, point.y);
         }
-    }
-
-    function launchApp() {
-        var view = tile.GridView.view;
-        if (view && view.model && typeof view.model.trigger === "function") {
-            view.model.trigger(tile.itemIndex, "", null);
-            root.closeMenu();
+        onReleased: {
+            if (dragged) tile.page.finishDrag();
         }
-    }
-
-    function openContextMenu(localX, localY) {
-        var favModel = (typeof kicker !== "undefined" && kicker.globalFavorites)
-                       ? kicker.globalFavorites : null;
-        var favId = (model.favoriteId !== undefined) ? model.favoriteId : "";
-        var url = (model.url !== undefined) ? model.url : "";
-        var actionList = (model.actionList !== undefined) ? model.actionList : null;
-        var acts = Tools.buildAppActions(i18n, favModel, favId, url, actionList);
-        if (acts.length === 0)
-            return;
-        var pos = tile.mapToItem(sharedContextMenu, localX, localY);
-        var view = tile.GridView.view;
-        sharedContextMenu.open(acts, pos.x, pos.y, {
-            model: view ? view.model : null,
-            index: tile.itemIndex
-        });
+        onCanceled: {
+            if (dragged) tile.page.cancelDrag();
+        }
+        onClicked: mouse => {
+            if (dragged) return;
+            if (tile.GridView.view) tile.GridView.view.currentIndex = tile.index;
+            if (mouse.button === Qt.RightButton) {
+                const point = tile.mapToItem(tile.page, mouse.x, mouse.y);
+                tile.page.openPinContext(tile.pin, tile.containerId, point.x, point.y);
+            } else tile.page.activate(tile.pin);
+        }
     }
 }

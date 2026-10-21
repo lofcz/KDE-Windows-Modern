@@ -252,14 +252,23 @@ In each: `panel.addWidget("org.kde.plasma.kickoff")` ->
 Built on top of Phase 1's structure. Add into existing pages/components.
 
 ### P2.1 — Pinned folders
-- Config keys: `pinnedFolders` (String JSON, default empty).
-- `components/FolderTile.qml` — 2x2 icon mosaic + name, hover/focus ring,
-  right-click context menu, drag-to-add `DropArea`.
-- Popups: `createFolderOverlay`, `folderRenameOverlay`, `folderContentPopup`,
-  app-picker `ListView` with checkboxes.
-- Helpers: `loadFolders`/`saveFolders`/`launchFolderApp`/`displayNameForId`/
-  `iconForId`.
-- Add pinned folders strip to `PinnedPage`.
+Implemented in applet 1.1.0:
+
+- `pinnedLayout` stores a versioned JSON layout with ordered app IDs and folders.
+- `code/pinlayout.js` normalizes membership, reorders, groups, renames, and
+  collapses singleton folders. Folder nesting and duplicate app membership are rejected.
+- `components/PinStore.qml` resolves live KDE favorite roles and source rows;
+  partial model loading never rewrites the saved layout.
+- `components/PinnedTile.qml` renders app icons or four-icon folder previews
+  and keeps drag geometry separate from the GridView-owned tile.
+- `components/PinFolderPopup.qml` provides the editable folder name and child grid.
+- `pages/PinnedPage.qml` handles between-tile reordering, delayed center-drop
+  grouping, drag-out extraction, scrolling, Escape cancellation, and context actions.
+- App launching, pin/unpin actions, and Ctrl+number shortcuts resolve the
+  underlying KDE favorites model. Drag commits are deferred until mouse release.
+
+Regression tests live in the parent plasma-plus repository:
+`node --test tests/test_pinned_layout.js` and `python3 tests/test_pinned_ui.py`.
 
 ### P2.2 — All-apps folders
 - Config keys: `allAppsFolders` (String JSON with `createdAt`).

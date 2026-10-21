@@ -108,6 +108,7 @@ Item {
                 acceptDeactivate = false;
                 sharedContextMenu.close();
                 powerMenu.close();
+                pinnedPage.dismiss();
             }
         }
 
@@ -408,7 +409,11 @@ Item {
                         rootItem.activateCurrentItem();
                     }
                     onSearchEscapePressed: {
-                        if (bottomBarContent.searchText !== "") {
+                        if (pinnedPage.dragging) {
+                            pinnedPage.cancelDrag();
+                        } else if (pinnedPage.folderOpen) {
+                            pinnedPage.closeFolder();
+                        } else if (bottomBarContent.searchText !== "") {
                             bottomBarContent.searchText = "";
                         } else {
                             root.closeMenu();
@@ -450,6 +455,14 @@ Item {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         visible: root.leftColumnState === 0
+                        columns: Math.max(4, Plasmoid.configuration.numberColumns)
+                        serializedLayout: Plasmoid.configuration.pinnedLayout
+                        onLayoutSaved: serialized => Plasmoid.configuration.pinnedLayout = serialized
+                        onLaunched: root.closeMenu()
+                        onContextMenuRequested: (actions, x, y, context) => {
+                            const point = pinnedPage.mapToItem(sharedContextMenu, x, y);
+                            sharedContextMenu.open(actions, point.x, point.y, context);
+                        }
                         onShowAllAppsRequested: {
                             root.leftColumnState = 1;
                         }
@@ -678,6 +691,9 @@ Item {
             }
 
             function handleContextAction(actionId, argument, context) {
+                if (pinnedPage.handleContextAction(actionId, context)) return;
+                if (actionId === "_kicker_favorite_remove" && argument)
+                    pinnedPage.forgetPin(argument.favoriteId);
                 // Milou runner actions: invoke the named action on the
                 // current match via ResultsView.runAction().
                 if (actionId === "_milou_runner_action" && context && context.kind === "milou") {
@@ -782,11 +798,10 @@ Item {
                 if (event.modifiers === Qt.ControlModifier) {
                     var digit = event.key - Qt.Key_1;
                     if (digit >= 0 && digit <= 8) {
-                        var count = globalFavorites.count;
+                        var count = pinnedPage.folderOpen ? pinnedPage.openFolder.items.length : pinnedPage.pinStore.tiles.length;
                         if (digit < count) {
                             event.accepted = true;
-                            globalFavorites.trigger(digit, "", null);
-                            root.closeMenu();
+                            pinnedPage.activateAt(digit);
                         }
                         return;
                     }
@@ -806,7 +821,11 @@ Item {
 
                 if (event.key === Qt.Key_Escape) {
                     event.accepted = true;
-                    if (root.searching) {
+                    if (pinnedPage.dragging) {
+                        pinnedPage.cancelDrag();
+                    } else if (pinnedPage.folderOpen) {
+                        pinnedPage.closeFolder();
+                    } else if (root.searching) {
                         reset();
                     } else if (root.leftColumnState === 1) {
                         root.leftColumnState = 0;
@@ -850,7 +869,7 @@ Item {
         }
 
         function setModels() {
-            pinnedPage.favoritesList.model = globalFavorites;
+            pinnedPage.favoritesModel = globalFavorites;
             sortedAppsModel.sourceModel = findRowModel(rootModel, "KICKER_ALL_MODEL");
             allAppsPage.allAppsList.model = sortedAppsModel;
         }
